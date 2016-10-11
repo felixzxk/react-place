@@ -251,6 +251,20 @@ var ReactPlace = React.createClass({
                     return _h
                 })(),
                 _top = node[0] && (node[0].offsetHeight + 'px') || 0;
+
+            function _topD(btn) {
+                var _top_ = document.getElementById('_PMFixTop'),
+                    topD = '10px';
+                if (_top_) {
+                    var _topH = _top_.offsetHeight,
+                        _btnH = btn.offsetHeight,
+                        _poor = _topH - _btnH;
+                    topD = _poor > 0 ? _poor / 2 : 10;
+                    topD += 'px'
+                }
+                return topD
+            }
+
             return node.map(function (n, i) {
                 if (n) {
                     var defaultVisible = n.dataset.defaultVisible !== false,
@@ -297,19 +311,12 @@ var ReactPlace = React.createClass({
                             var rightSwitchBtn = document.getElementById('rightSwitchBtn'),
                                 scrollWidth = document.getElementById('__PM__').offsetWidth - _wrapW;
                             if (rightSwitchBtn) {
-                                var _top_ = document.getElementById('_PMFixTop');
                                 if (_wrapWidth !== 'auto') {
                                     rightSwitchBtn.style.right = (marginLeft + scrollWidth) + 'px'
                                 } else {
                                     rightSwitchBtn.style.right = scrollWidth + 'px'
                                 }
-                                if (_top_) {
-                                    var _topH = _top_.offsetHeight,
-                                        _btnH = rightSwitchBtn.offsetHeight,
-                                        _poor = _topH - _btnH,
-                                        topD = _poor > 0 ? _poor / 2 : 10;
-                                    rightSwitchBtn.style.top = topD + 'px'
-                                }
+                                rightSwitchBtn.style.top = _topD(rightSwitchBtn)
                             }
                             n.style.right = _wrapWidth !== 'auto' ? (marginLeft + scrollWidth) + 'px' : scrollWidth + 'px';
                             n.style.top = _top;
@@ -329,15 +336,8 @@ var ReactPlace = React.createClass({
                         case 3:
                             var leftSwitchBtn = document.getElementById('leftSwitchBtn');
                             if (leftSwitchBtn) {
-                                var _top_ = document.getElementById('_PMFixTop');
-                                leftSwitchBtn.style.left = marginLeft + 'px'
-                                if (_top_) {
-                                    var _topH = _top_.offsetHeight,
-                                        _btnH = leftSwitchBtn.offsetHeight,
-                                        _poor = _topH - _btnH,
-                                        topD = _poor > 0 ? _poor / 2 : 10;
-                                    leftSwitchBtn.style.top = topD + 'px'
-                                }
+                                leftSwitchBtn.style.left = marginLeft + 'px';
+                                leftSwitchBtn.style.top = _topD(leftSwitchBtn)
                             }
                             n.style.left = marginLeft + 'px';
                             n.style.top = _top;
@@ -874,8 +874,11 @@ SwitchBtn.style = {
         height: '32px',
         padding: '0 32px 0 5px',
         color: '#333',
-        fontSize: '14px',
-        overflow: 'hidden'
+        fontSize: '12px',
+        overflow: 'hidden',
+        maxWidth: '96px',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
     },
     icoLeftBtn: {
         padding: '0 5px 0 32px',
