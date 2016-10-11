@@ -9,7 +9,10 @@
   "keywords": [
     "placement"
   ],
-  "author": "ZhaoXinke",
+  "author": {
+    "name": "felixzxk",
+    "mail": "felixzxk@gmail.com"
+  },
   "license": "ISC",
   "dependencies": {
     "react": "^15.3.2",
