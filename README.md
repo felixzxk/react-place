@@ -13,9 +13,9 @@
 
     npm i
 
-按装react-place组件（demo里已经有组件了，不需要另外安装）
+按装react-respond组件（demo里已经有组件了，不需要另外安装）
 
-    npm i --save react-place
+    npm i --save react-respond
     
 ## 运行demo
 依赖包安装完成后，执行下面的命令
