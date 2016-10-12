@@ -8,8 +8,19 @@
 不过现在这东西还很渣！
 ## 特点
 响应式布局，自定义响应式布局的规则，自动显示或隐藏侧边栏，详见 [wiki](https://github.com/felixzxk/react-place/wiki)
-## 安装
-    npm install --save react-place
+## 安装demo
+先clone到本地，然后安装依赖
+
+    npm i
+
+按装react-place组件（demo里已经有组件了，不需要另外安装）
+
+    npm i --save react-place
+    
+## 运行demo
+依赖包安装完成后，执行下面的命令
+
+    npm run dev
 ## 使用
     var ReactPlace = require('react-place'),    //主体容器
      RPCell = ReactPlace.RPCell,                //基础子元素
