@@ -67,6 +67,8 @@ class MainApp extends React.Component {
                     onLoading = {this.onLoading.bind(this)}
                     onLoaded = {this.onLoaded.bind(this)}
                     onRespond = {this.onRespond.bind(this)}
+                    sameHeight = {200}
+                    sameSize = {3}
                 >
                     <RRCell
                         size = {6}
