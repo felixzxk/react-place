@@ -1,4 +1,4 @@
-# react-place
+# react-respond
 ## 这是啥？
 这是一个基于reactjs的布局组件
 ## 为啥？
@@ -11,30 +11,30 @@
 ## 安装
     npm install --save react-place
 ## 使用
-    var ReactPlace = require('react-place'),    //主体容器
-     RPCell = ReactPlace.RPCell,                //基础子元素
-     RPFix = ReactPlace.RPFix,                  //浮动fix定位的子元素
+    var ReactRespond = require('react-place'),    //主体容器
+     RRCell = ReactRespond.RRCell,                //基础子元素
+     RRFix = ReactRespond.RRFix,                  //浮动fix定位的子元素
      
-    <ReactPlace
+    <ReactRespond
         {/* ...someProps goes here */}
     >
-        <RPCell
+        <RRCell
             {/* ...someProps goes here */}
         >
             {/* your content gose here */}
-        </RPCell>
-        {/* ... any other RPCells ... */}
-        <RPCell
+        </RRCell>
+        {/* ... any other RRCells ... */}
+        <RRCell
             {/* ...someProps goes here */}
         >
             {/* your content gose here */}
-        </RPCell>
-        <RPFix
+        </RRCell>
+        <RRFix
             type = 'top'                        //fix的元素需要存在type属性，定义它在页面上的位置类型，默认是“top”
             {/* ...someProps goes here */}
         >
             {/* your content gose here */}
-        </RPFix>
-    </ReactPlace>
-在ReactPlace只允许存在RPCell、RPFix两类元素，其他元素将被移除；
-RPFix同方向的元最多只能存在1个，多余的将被移除。
+        </RRFix>
+    </ReactRespond>
+在ReactRespond只允许存在RRCell、RRFix两类元素，其他元素将被移除；
+RRFix同方向的元最多只能存在1个，多余的将被移除。
