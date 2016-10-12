@@ -367,6 +367,9 @@ var ReactPlace = React.createClass({
                 fixProps: fixProps
             });
         }
+        //TODO 重置高宽
+        ReactPlace._.setSize(self,(parseInt(pds[0]) +parseInt(pds[2]) ),'y' );
+        ReactPlace._.setSize(wrap,(parseInt(pds[1]) +parseInt(pds[3]) ),'x' );
         wrap.style.padding = '0 ' + pds[1] + ' ' + margin + 'px ' + pds[3];
         self.style.padding = pds[0] + ' 0 ' + pds[2];
     },
@@ -468,6 +471,11 @@ var ReactPlace = React.createClass({
         console.log('当前state:', this.state);
     },
     componentDidMount: function () {
+        var body = document.body.style;
+        body.margin = 0;
+        body.height = '100%';
+        body.width = '100%';
+        body.overflow = 'hidden';
         var _this = this,
             wrap = document.getElementById('__PM_WRAP__'),
             children = wrap.children,
@@ -573,10 +581,16 @@ var ReactPlace = React.createClass({
     }
 });
 ReactPlace._ = {
-    setSize: function (self) {
-        var topDisSelf = self.offsetTop,
-            windowH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-        self.style.height = (windowH - topDisSelf) + 'px';
+    setSize: function (target, padding, type) {
+        var _p = parseInt(padding);
+        if(type == 'x'){
+            var oldW = parseInt(target.style.width),
+                newW = (oldW - _p) + 'px';
+            target.style.width = newW
+        }else if(type == 'y'){
+            var windowH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+            target.style.height = (windowH - _p) + 'px';
+        }
     },
     operateSize: function (parent, curSize, res) {
         var newSize = '';
@@ -938,4 +952,4 @@ var _assign = function () {
 ReactPlace.RPCell = RPCell;
 ReactPlace.RPFix = RPFix;
 ReactPlace.SwitchBtn = SwitchBtn;
-module.exports = {ReactPlace};
+module.exports = ReactPlace;
