@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactPlace from './index';
+import ReactPlace from './react-place';
 const RPCell = ReactPlace.RPCell,
     RPFix = ReactPlace.RPFix;
 class MainApp extends React.Component {
@@ -48,8 +48,8 @@ class MainApp extends React.Component {
     render() {
         const ds = {
                 textAlign: 'center',
-                lineHeight: '300px',
-                height: '300px'
+                lineHeight: '200px',
+                height: '200px'
             },
             respond = {
                 lg: {

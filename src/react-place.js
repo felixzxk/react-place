@@ -367,9 +367,8 @@ var ReactPlace = React.createClass({
                 fixProps: fixProps
             });
         }
-        //TODO 重置高宽
-        ReactPlace._.setSize(self,(parseInt(pds[0]) +parseInt(pds[2]) ),'y' );
-        ReactPlace._.setSize(wrap,(parseInt(pds[1]) +parseInt(pds[3]) ),'x' );
+        ReactPlace._.setSize(self, (parseInt(pds[0]) + parseInt(pds[2]) ), 'y');
+        ReactPlace._.setSize(wrap, (parseInt(pds[1]) + parseInt(pds[3]) ), 'x');
         wrap.style.padding = '0 ' + pds[1] + ' ' + margin + 'px ' + pds[3];
         self.style.padding = pds[0] + ' 0 ' + pds[2];
     },
@@ -390,7 +389,7 @@ var ReactPlace = React.createClass({
                 this.onRespond(_w, this.state.potion, this.state.sameSize)
             })
         }
-        ReactPlace._.setSize(self);
+        //ReactPlace._.setSize(self,0,'y');
         this.setFixedCells(self, wrap, _w || curSize);
         this.setCell(self, wrap, _w || curSize)
     },
@@ -467,9 +466,6 @@ var ReactPlace = React.createClass({
             this.props.onRespond(type, potion, sameSize)
         }
     },
-    getState: function () {
-        console.log('当前state:', this.state);
-    },
     componentDidMount: function () {
         var body = document.body.style;
         body.margin = 0;
@@ -542,6 +538,13 @@ var ReactPlace = React.createClass({
                     )
                 }
             })(),
+            mainStyle = {
+                overflow: 'auto',
+                overflowX: 'hidden',
+                overflowY: 'auto',
+                position: 'relative',
+                backgroundColor: '#fff'
+            },
             cellsWrapStyle = {
                 overflow: 'hidden',
                 width: '110%'
@@ -554,14 +557,7 @@ var ReactPlace = React.createClass({
             <div
                 id = {this.state.id}
                 className = {`__PM__ ${this.state.curSize}`}
-                style = {{
-                overflow: 'auto',
-                overflowX: 'hidden',
-                overflowY: 'auto',
-                position: 'relative',
-                backgroundColor: '#fff'
-            }}
-                onClick = {this.getState}
+                style = {mainStyle}
             >
                 {sideBarController}
                 <div
@@ -583,11 +579,11 @@ var ReactPlace = React.createClass({
 ReactPlace._ = {
     setSize: function (target, padding, type) {
         var _p = parseInt(padding);
-        if(type == 'x'){
+        if (type == 'x') {
             var oldW = parseInt(target.style.width),
                 newW = (oldW - _p) + 'px';
             target.style.width = newW
-        }else if(type == 'y'){
+        } else if (type == 'y') {
             var windowH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
             target.style.height = (windowH - _p) + 'px';
         }
@@ -846,10 +842,10 @@ var SwitchBtn = React.createClass({
                 backgroundColor: this.state.gbc,
                 display: this.state.visible ? '' : 'none'
             },
-            btnStyle = this.state.icoPos == 'right' ? style.btn : _assign({}, style.btn, style.icoLeftBtn),
-            lineStyle = this.state.icoPos == 'right' ? style.lineWrap : _assign({}, style.lineWrap, style.icoLeftLineWrap),
-            lineStyleTop = this.state.show ? _assign({}, style.line, style.lineRotateTop) : style.line,
-            lineStyleBottom = this.state.show ? _assign({}, style.line, style.line2, style.lineRotateBottom) : _assign({}, style.line, style.line2),
+            btnStyle = this.state.icoPos == 'right' ? style.btn : _assign(style.btn, style.icoLeftBtn),
+            lineStyle = this.state.icoPos == 'right' ? style.lineWrap : _assign(style.lineWrap, style.icoLeftLineWrap),
+            lineStyleTop = this.state.show ? _assign(style.line, style.lineRotateTop) : style.line,
+            lineStyleBottom = this.state.show ? _assign(style.line, style.line2, style.lineRotateBottom) : _assign(style.line, style.line2),
             btnClassName = this.state.show ? 'toClose' : 'toOpen';
         return (
             <div
@@ -890,7 +886,7 @@ SwitchBtn.style = {
         color: '#333',
         fontSize: '12px',
         overflow: 'hidden',
-        maxWidth: '96px',
+        maxWidth: '64px',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap'
     },
