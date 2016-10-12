@@ -3,9 +3,10 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactPlace from './react-place';
-const RPCell = ReactPlace.RPCell,
-    RPFix = ReactPlace.RPFix;
+import ReactRespond from 'react-respond'
+//import ReactPlace from 'react-place';
+const RRCell = ReactRespond.RRCell,
+    RRFix = ReactRespond.RRFix;
 class MainApp extends React.Component {
     constructor(props) {
         super(props);
@@ -57,7 +58,7 @@ class MainApp extends React.Component {
                 }
             };
         return (
-                <ReactPlace
+                <ReactRespond
                     margin = {5}
                     potion = {12}
                     respond = {respond}
@@ -67,47 +68,47 @@ class MainApp extends React.Component {
                     onLoaded = {this.onLoaded.bind(this)}
                     onRespond = {this.onRespond.bind(this)}
                 >
-                    <RPCell
+                    <RRCell
                         size = {6}
                     >
                         <div style = {ds}>size:6</div>
-                    </RPCell>
-                    <RPCell
+                    </RRCell>
+                    <RRCell
                         size = {6}
                     >
                         <div style = {ds}>size:6</div>
-                    </RPCell>
-                    <RPCell
+                    </RRCell>
+                    <RRCell
                         size = {8}
                     >
                         <div style = {ds}>size:8</div>
-                    </RPCell>
-                    <RPCell
+                    </RRCell>
+                    <RRCell
                         size = {3}
                     >
                         <div style = {ds}>size:3</div>
-                    </RPCell>
-                    <RPCell
+                    </RRCell>
+                    <RRCell
                         size = {10}
                     >
                         <div style = {ds}>size:10</div>
-                    </RPCell>
-                    <RPCell
+                    </RRCell>
+                    <RRCell
                         size = {3}
                     >
                         <div style = {ds}>size:3</div>
-                    </RPCell>
-                    <RPCell
+                    </RRCell>
+                    <RRCell
                         size = {3}
                     >
                         <div style = {ds}>size:3</div>
-                    </RPCell>
-                    <RPCell
+                    </RRCell>
+                    <RRCell
                         size = {3}
                     >
                         <div style = {ds}>size:3</div>
-                    </RPCell>
-                    <RPFix
+                    </RRCell>
+                    <RRFix
                         type = "Bottom"
                     >
                         <div style = {{
@@ -116,8 +117,8 @@ class MainApp extends React.Component {
 						textAlign: 'center'
 					}}>底部
                         </div>
-                    </RPFix>
-                    <RPFix
+                    </RRFix>
+                    <RRFix
                         type = "Left"
                         width = {180}
                         defaultVisible = {this.state.visible}
@@ -131,8 +132,8 @@ class MainApp extends React.Component {
                         >
                             这里是左侧边栏
                         </div>
-                    </RPFix>
-                    <RPFix
+                    </RRFix>
+                    <RRFix
                         type = "Right"
                         width = {120}
                         style = {{
@@ -145,8 +146,8 @@ class MainApp extends React.Component {
                         >
                             这里是右侧边栏
                         </div>
-                    </RPFix>
-                    <RPFix
+                    </RRFix>
+                    <RRFix
                         type = "Top"
                         style = {{
 						backgroundColor: '#ddd'
@@ -159,8 +160,8 @@ class MainApp extends React.Component {
 						backgroundColor: '#ddd'
 					}}>顶部
                         </div>
-                    </RPFix>
-                </ReactPlace>
+                    </RRFix>
+                </ReactRespond>
         )
     }
 }

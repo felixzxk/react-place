@@ -6,4 +6,5 @@
 .idea/react-place.iml
 .idea/workspace.xml
 node_modules/
-'.idea' 
+.idea
+src/react-place.js
