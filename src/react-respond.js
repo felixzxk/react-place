@@ -388,7 +388,6 @@ var ReactRespond = React.createClass({
                 this.onRespond(_w, this.state.potion, this.state.sameSize)
             })
         }
-        var _pm_ = document.getElementById('__PM__');
         this.setFixedCells(self, wrap, _w || curSize);
         this.setCell(self, wrap, _w || curSize)
     },
