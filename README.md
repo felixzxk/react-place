@@ -36,7 +36,7 @@ webpack需要全局安装
     },
 
 ## 使用
-    var ReactRespond = require('react-place'),    //主体容器
+    var ReactRespond = require('react-respond'),    //主体容器
      RRCell = ReactRespond.RRCell,                //基础子元素
      RRFix = ReactRespond.RRFix,                  //浮动fix定位的子元素
      
