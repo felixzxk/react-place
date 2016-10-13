@@ -4,7 +4,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactRespond from 'react-respond'
-//import ReactPlace from 'react-place';
+//import ReactRespond from './react-respond';
 const RRCell = ReactRespond.RRCell,
     RRFix = ReactRespond.RRFix;
 class MainApp extends React.Component {
@@ -33,7 +33,7 @@ class MainApp extends React.Component {
 
     /*onScroll(n){
      console.log('滚动中',n)
-     }*/
+    }*/
     onLoading() {
         console.log('加载中...')
     }
@@ -68,7 +68,7 @@ class MainApp extends React.Component {
                     onLoaded = {this.onLoaded.bind(this)}
                     onRespond = {this.onRespond.bind(this)}
                     sameHeight = {200}
-                    sameSize = {3}
+                    sameSize = {4}
                 >
                     <RRCell
                         size = {6}
