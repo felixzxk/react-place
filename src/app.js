@@ -3,10 +3,11 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactRespond from 'react-respond'
-//import ReactRespond from './react-respond';
+//import ReactRespond from 'react-respond'
+import ReactRespond from './react-respond';
 const RRCell = ReactRespond.RRCell,
     RRFix = ReactRespond.RRFix;
+console.log('ddd')
 class MainApp extends React.Component {
     constructor(props) {
         super(props);
