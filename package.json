@@ -1,12 +1,21 @@
 {
-  "name": "placement",
-  "version": "0.0.1",
+  "name": "demo for react-respond",
+  "version": "0.1.0",
   "description": "placement",
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --progress --colors --host localhost --port 3001 --inline --hot"
   },
   "keywords": [
+    "demo",
+    "react",
+    "respond",
+    "layout",
+    "switch",
+    "webpack",
+    "javascript",
+    "jsx",
+    "babel",
     "placement"
   ],
   "author": {
@@ -17,7 +26,7 @@
   "dependencies": {
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
-    "react-respond": "0.0.1"
+    "react-respond": "1.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.17.0",

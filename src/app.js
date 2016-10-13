@@ -3,8 +3,8 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-//import ReactRespond from './react-respond';
-import ReactRespond from 'react-respond';
+import ReactRespond from 'react-respond'
+//import ReactPlace from 'react-place';
 const RRCell = ReactRespond.RRCell,
     RRFix = ReactRespond.RRFix;
 class MainApp extends React.Component {
@@ -58,111 +58,112 @@ class MainApp extends React.Component {
                 }
             };
         return (
-            <ReactRespond
-                margin={5}
-                potion={12}
-                respond={respond}
-                onScrollTop={this.onScrollTop.bind(this)}
-                onScrollBottom={this.onScrollBottom.bind(this)}
-                onLoading={this.onLoading.bind(this)}
-                onLoaded={this.onLoaded.bind(this)}
-                onRespond={this.onRespond.bind(this)}
-                sameHeight={200}
-            >
-                <RRCell
-                    size={6}
+                <ReactRespond
+                    margin = {5}
+                    potion = {12}
+                    respond = {respond}
+                    onScrollTop = {this.onScrollTop.bind(this)}
+                    onScrollBottom = {this.onScrollBottom.bind(this)}
+                    onLoading = {this.onLoading.bind(this)}
+                    onLoaded = {this.onLoaded.bind(this)}
+                    onRespond = {this.onRespond.bind(this)}
+                    sameHeight = {200}
+                    sameSize = {3}
                 >
-                    <div style={ds}>size:6</div>
-                </RRCell>
-                <RRCell
-                    size={6}
-                >
-                    <div style={ds}>size:6</div>
-                </RRCell>
-                <RRCell
-                    size={8}
-                >
-                    <div style={ds}>size:8</div>
-                </RRCell>
-                <RRCell
-                    size={3}
-                >
-                    <div style={ds}>size:3</div>
-                </RRCell>
-                <RRCell
-                    size={10}
-                >
-                    <div style={ds}>size:10</div>
-                </RRCell>
-                <RRCell
-                    size={3}
-                >
-                    <div style={ds}>size:3</div>
-                </RRCell>
-                <RRCell
-                    size={3}
-                >
-                    <div style={ds}>size:3</div>
-                </RRCell>
-                <RRCell
-                    size={3}
-                >
-                    <div style={ds}>size:3</div>
-                </RRCell>
-                <RRFix
-                    type="Bottom"
-                >
-                    <div style={{
-                        lineHeight: '44px',
-                        height: '44px',
-                        textAlign: 'center'
-                    }}>底部
-                    </div>
-                </RRFix>
-                <RRFix
-                    type="Left"
-                    width={180}
-                    defaultVisible={this.state.visible}
-                    style={{
-                        backgroundColor: '#ccc'
-                    }}
-                    title='left'
-                >
-                    <div
-                        style={ds}
+                    <RRCell
+                        size = {6}
                     >
-                        这里是左侧边栏
-                    </div>
-                </RRFix>
-                <RRFix
-                    type="Right"
-                    width={120}
-                    style={{
-                        backgroundColor: '#ccc'
-                    }}
-                    title='这里是右侧边栏'
-                >
-                    <div
-                        style={ds}
+                        <div style = {ds}>size:6</div>
+                    </RRCell>
+                    <RRCell
+                        size = {6}
                     >
-                        这里是右侧边栏
-                    </div>
-                </RRFix>
-                <RRFix
-                    type="Top"
-                    style={{
-                        backgroundColor: '#ddd'
-                    }}
-                >
-                    <div style={{
-                        lineHeight: '64px',
-                        height: '64px',
-                        textAlign: 'center',
-                        backgroundColor: '#ddd'
-                    }}>顶部
-                    </div>
-                </RRFix>
-            </ReactRespond>
+                        <div style = {ds}>size:6</div>
+                    </RRCell>
+                    <RRCell
+                        size = {8}
+                    >
+                        <div style = {ds}>size:8</div>
+                    </RRCell>
+                    <RRCell
+                        size = {3}
+                    >
+                        <div style = {ds}>size:3</div>
+                    </RRCell>
+                    <RRCell
+                        size = {10}
+                    >
+                        <div style = {ds}>size:10</div>
+                    </RRCell>
+                    <RRCell
+                        size = {3}
+                    >
+                        <div style = {ds}>size:3</div>
+                    </RRCell>
+                    <RRCell
+                        size = {3}
+                    >
+                        <div style = {ds}>size:3</div>
+                    </RRCell>
+                    <RRCell
+                        size = {3}
+                    >
+                        <div style = {ds}>size:3</div>
+                    </RRCell>
+                    <RRFix
+                        type = "Bottom"
+                    >
+                        <div style = {{
+						lineHeight: '44px',
+						height: '44px',
+						textAlign: 'center'
+					}}>底部
+                        </div>
+                    </RRFix>
+                    <RRFix
+                        type = "Left"
+                        width = {180}
+                        defaultVisible = {this.state.visible}
+                        style = {{
+						backgroundColor: '#ccc'
+					}}
+                        title = 'left'
+                    >
+                        <div
+                            style = {ds}
+                        >
+                            这里是左侧边栏
+                        </div>
+                    </RRFix>
+                    <RRFix
+                        type = "Right"
+                        width = {120}
+                        style = {{
+						backgroundColor: '#ccc'
+					}}
+                        title = '这里是右侧边栏'
+                    >
+                        <div
+                            style = {ds}
+                        >
+                            这里是右侧边栏
+                        </div>
+                    </RRFix>
+                    <RRFix
+                        type = "Top"
+                        style = {{
+						backgroundColor: '#ddd'
+					}}
+                    >
+                        <div style = {{
+						lineHeight: '64px',
+						height: '64px',
+						textAlign: 'center',
+						backgroundColor: '#ddd'
+					}}>顶部
+                        </div>
+                    </RRFix>
+                </ReactRespond>
         )
     }
 }
