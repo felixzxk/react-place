@@ -3,8 +3,8 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactRespond from 'react-respond'
-//import ReactRespond from './react-respond';
+//import ReactRespond from 'react-respond'
+import ReactRespond from './react-respond';
 const RRCell = ReactRespond.RRCell,
     RRFix = ReactRespond.RRFix;
 class MainApp extends React.Component {
@@ -16,41 +16,41 @@ class MainApp extends React.Component {
     }
 
     onScrollTop() {
-        console.log('到顶了')
+        //console.log('到顶了')
     }
 
     onScrollBottom(n) {
-        console.log('到底了', n)
+        //console.log('到底了', n)
     }
 
     onScrollUp(n) {
-        console.log('上滚', n)
+        //console.log('上滚', n)
     }
 
     onScrollDown(n) {
-        console.log('下滚', n)
+        //console.log('下滚', n)
     }
 
     /*onScroll(n){
      console.log('滚动中',n)
     }*/
     onLoading() {
-        console.log('加载中...')
+        //console.log('加载中...')
     }
 
     onLoaded() {
-        console.log('加载完毕')
+        //console.log('加载完毕')
     }
 
     onRespond(a, b, c) {
-        console.log('onRespond', a, b, c);
+        //console.log('onRespond', a, b, c);
     }
 
     render() {
         const ds = {
                 textAlign: 'center',
-                lineHeight: '200px',
-                height: '200px'
+                lineHeight: '150px',
+                height: '150px'
             },
             respond = {
                 lg: {
@@ -67,7 +67,6 @@ class MainApp extends React.Component {
                     onLoading = {this.onLoading.bind(this)}
                     onLoaded = {this.onLoaded.bind(this)}
                     onRespond = {this.onRespond.bind(this)}
-                    sameHeight = {200}
                     sameSize = {4}
                 >
                     <RRCell

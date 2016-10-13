@@ -25,12 +25,12 @@ var RRCell = React.createClass({
         cellContStyle.width = '100%';
         return (
             <div
-                className = 'PMCell'
-                style = {cellWrapStyle}
-                data-size = {this.state.size}
+                className='PMCell'
+                style={cellWrapStyle}
+                data-size={this.state.size}
             >
                 <div
-                    style = {cellContStyle}
+                    style={cellContStyle}
                 >
                     {this.props.children}
                 </div>
@@ -113,20 +113,20 @@ var RRFix = React.createClass({
         style.height = '100%';
         return (
             <div
-                id = {id}
-                className = {className}
-                style = {wrapStyle0}
-                data-defaultVisible = {this.state.defaultVisible}
-                data-type = {this.state.type}
-                title = {this.state.title}
+                id={id}
+                className={className}
+                style={wrapStyle0}
+                data-defaultVisible={this.state.defaultVisible}
+                data-type={this.state.type}
+                title={this.state.title}
             >
                 <div
-                    id = {id2}
-                    style = {wrapStyle}
+                    id={id2}
+                    style={wrapStyle}
                 >
                     <div
-                        id = {id3}
-                        style = {style}
+                        id={id3}
+                        style={style}
                     >
                         {this.props.children}
                     </div>
@@ -194,7 +194,6 @@ var ReactRespond = React.createClass({
         }
         for (var i = 0; i < cells.length; i++) {
             var size = this.state.sameSize == 0 ? parseInt(cells[i].dataset.size) : this.state.sameSize;
-            console.log('size',size);
             if (size > potion) size = potion;
             if (cells[i].className != '_clear_') {
                 cells[i].style.width = setCellWidth(size);
@@ -232,6 +231,7 @@ var ReactRespond = React.createClass({
             _wrapWidth = wrapW == 'auto' ? wrapW : wrapW,
             wrapWidth = _wrapWidth !== 'auto' ? _wrapWidth + 'px' : 'auto';
         wrap.style.width = wrapWidth;
+        console.log('wrapWidth', wrapWidth)
         var fixProps = this.state.fixProps;
         var pds = (function () {
             if (fixProps == undefined) {
@@ -269,6 +269,7 @@ var ReactRespond = React.createClass({
                             n.style.left = 0;
                             n.style.top = 0;
                             n.style.width = _wrapW + 'px';
+                            console.log('PM_WIDTH',_wrapW)
                             if (!fixProps.top) {
                                 fixProps.top = {
                                     visible: defaultVisible,
@@ -513,24 +514,24 @@ var ReactRespond = React.createClass({
                         <div>
                             {fixLeft ?
                                 <SwitchBtn
-                                    id = 'leftSwitchBtn'
-                                    icoPos = 'left'
-                                    show = {fixLeft.visible}
-                                    type = 'left'
-                                    opened = {_this.opened}
-                                    closed = {_this.closed}
-                                    visible = {show}
-                                    title = {fixLeft.title}
+                                    id='leftSwitchBtn'
+                                    icoPos='left'
+                                    show={fixLeft.visible}
+                                    type='left'
+                                    opened={_this.opened}
+                                    closed={_this.closed}
+                                    visible={show}
+                                    title={fixLeft.title}
                                 /> : ''}
                             {fixRight ?
                                 <SwitchBtn
-                                    id = 'rightSwitchBtn'
-                                    show = {fixRight.visible}
-                                    type = 'right'
-                                    opened = {_this.opened}
-                                    closed = {_this.closed}
-                                    visible = {show}
-                                    title = {fixRight.title}
+                                    id='rightSwitchBtn'
+                                    show={fixRight.visible}
+                                    type='right'
+                                    opened={_this.opened}
+                                    closed={_this.closed}
+                                    visible={show}
+                                    title={fixRight.title}
                                 /> : ''}
                         </div>
                     )
@@ -553,23 +554,23 @@ var ReactRespond = React.createClass({
             };
         return (
             <div
-                id = {this.state.id}
-                className = {`__PM__ ${this.state.curSize}`}
-                style = {mainStyle}
+                id={this.state.id}
+                className={`__PM__ ${this.state.curSize}`}
+                style={mainStyle}
             >
                 {sideBarController}
                 <div
-                    id = "__PM_WRAP__"
-                    style = {wrapStyle}
+                    id="__PM_WRAP__"
+                    style={wrapStyle}
                 >
                     <div
-                        id = "cells"
-                        style = {cellsWrapStyle}
+                        id="cells"
+                        style={cellsWrapStyle}
                     ></div>
-                    <div id = "fixes"></div>
+                    <div id="fixes"></div>
                     {this.props.children}
                 </div>
-                <div id = "__PM_Width_" title = "用来侦测可用宽度常量"></div>
+                <div id="__PM_Width_" title="用来侦测可用宽度常量"></div>
             </div>
         )
     }
@@ -850,27 +851,27 @@ var SwitchBtn = React.createClass({
             btnClassName = this.state.show ? 'toClose' : 'toOpen';
         return (
             <div
-                id = {this.state.id}
-                style = {mainStyle}
+                id={this.state.id}
+                style={mainStyle}
             >
-                <a href = "###"
-                   className = {btnClassName}
-                   onClick = {this.trigger}
-                   style = {btnStyle}
-                   data-type = {this.state.type}
+                <a href="###"
+                   className={btnClassName}
+                   onClick={this.trigger}
+                   style={btnStyle}
+                   data-type={this.state.type}
                 >
                     {this.state.title}
                     <span
-                        id = {`${this.state.id}_line`}
-                        style = {lineStyle}
+                        id={`${this.state.id}_line`}
+                        style={lineStyle}
                     >
                         <i
-                            id = {`${this.state.id}_lineTop`}
-                            style = {lineStyleTop}
+                            id={`${this.state.id}_lineTop`}
+                            style={lineStyleTop}
                         />
                         <i
-                            id = {`${this.state.id}_lineBottom`}
-                            style = {lineStyleBottom}
+                            id={`${this.state.id}_lineBottom`}
+                            style={lineStyleBottom}
                         />
                     </span>
                 </a>
