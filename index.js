@@ -146,7 +146,7 @@ var ReactRespond = React.createClass({
             respond: respond,
             style: this.props.style,
             curSize: '',
-            sameSize: this.props.sameSize || 'auto',
+            sameSize: this.props.sameSize || 0,
             allowControlSideBar: this.props.allowControlSideBar !== false
         };
     },
@@ -160,6 +160,7 @@ var ReactRespond = React.createClass({
             sameHeight: nextProp.sameHeight,
             style: nextProp.style,
             respond: respond,
+            sameSize: nextProp.sameSize || 0,
             allowControlSideBar: nextProp.allowControlSideBar !== false
         }, function () {
             this.needSetting();
@@ -192,7 +193,8 @@ var ReactRespond = React.createClass({
             })
         }
         for (var i = 0; i < cells.length; i++) {
-            var size = this.state.sameSize == 'auto' ? parseInt(cells[i].dataset.size) : this.state.sameSize;
+            var size = this.state.sameSize == 0 ? parseInt(cells[i].dataset.size) : this.state.sameSize;
+            console.log('size',size);
             if (size > potion) size = potion;
             if (cells[i].className != '_clear_') {
                 cells[i].style.width = setCellWidth(size);
@@ -240,17 +242,7 @@ var ReactRespond = React.createClass({
             } else {
                 fixProps.ready = true
             }
-            var fixedHeightY = (function () {
-                    var _h = selfH;
-                    if (node[0]) {
-                        _h -= node[0].offsetHeight
-                    }
-                    if (node[2]) {
-                        _h -= node[2].offsetHeight
-                    }
-                    return _h
-                })(),
-                _top = node[0] && (node[0].offsetHeight + 'px') || 0;
+            var _top = node[0] && (node[0].offsetHeight + 'px') || 0;
 
             function _topD(btn) {
                 var _top_ = document.getElementById('_PMFixTop'),
@@ -320,7 +312,6 @@ var ReactRespond = React.createClass({
                             }
                             n.style.right = _wrapWidth !== 'auto' ? (marginLeft + scrollWidth) + 'px' : scrollWidth + 'px';
                             n.style.top = _top;
-                            n.style.height = fixedHeightY + 'px';
                             if (!fixProps.right) {
                                 fixProps.right = {
                                     visible: defaultVisible,
@@ -341,7 +332,6 @@ var ReactRespond = React.createClass({
                             }
                             n.style.left = marginLeft + 'px';
                             n.style.top = _top;
-                            n.style.height = fixedHeightY + 'px';
                             if (!fixProps.left) {
                                 fixProps.left = {
                                     visible: defaultVisible,
@@ -367,7 +357,14 @@ var ReactRespond = React.createClass({
                 fixProps: fixProps
             });
         }
-        ReactRespond._.setSize(self, (parseInt(pds[0]) + parseInt(pds[2]) ), 'y');
+        var targetY = [self];
+        if (node[1]) {
+            targetY.push(node[1])
+        }
+        if (node[3]) {
+            targetY.push(node[3])
+        }
+        ReactRespond._.setSize(targetY, (parseInt(pds[0]) + parseInt(pds[2]) ), 'y');
         ReactRespond._.setSize(wrap, (parseInt(pds[1]) + parseInt(pds[3]) ), 'x');
         wrap.style.padding = '0 ' + pds[1] + ' ' + margin + 'px ' + pds[3];
         self.style.padding = pds[0] + ' 0 ' + pds[2];
@@ -381,15 +378,16 @@ var ReactRespond = React.createClass({
             curSize = this.state.curSize;
         var _w = ReactRespond._.operateSize(parent, curSize, res);
         if (_w && _w !== curSize) {
+            var oldSameSize = this.props.sameSize || 0;
             this.setState({
                 curSize: _w,
                 potion: res[_w].potion !== 0 ? res[_w].potion : potion,
-                sameSize: res[_w].unifySize !== 0 ? res[_w].unifySize : 'auto'
+                sameSize: res[_w].unifySize !== 0 ? res[_w].unifySize : oldSameSize
             }, function () {
                 this.onRespond(_w, this.state.potion, this.state.sameSize)
             })
         }
-        //ReactRespond._.setSize(self,0,'y');
+        var _pm_ = document.getElementById('__PM__');
         this.setFixedCells(self, wrap, _w || curSize);
         this.setCell(self, wrap, _w || curSize)
     },
@@ -584,8 +582,11 @@ ReactRespond._ = {
                 newW = (oldW - _p) + 'px';
             target.style.width = newW
         } else if (type == 'y') {
-            var windowH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-            target.style.height = (windowH - _p) + 'px';
+            var windowH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
+                targetHeight = (windowH - _p) + 'px';
+            target.forEach(function (t) {
+                t.style.height = targetHeight
+            })
         }
     },
     operateSize: function (parent, curSize, res) {
