@@ -25,13 +25,13 @@ var RRCell = React.createClass({
         cellContStyle.width = '100%';
         return (
             <div
-                className = 'RRCell'
-                style = {cellWrapStyle}
-                data-size = {this.state.size}
-                size = {this.state.size}
+                className='RRCell'
+                style={cellWrapStyle}
+                data-size={this.state.size}
+                size={this.state.size}
             >
                 <div
-                    style = {cellContStyle}
+                    style={cellContStyle}
                 >
                     {this.props.children}
                 </div>
@@ -114,20 +114,20 @@ var RRFix = React.createClass({
         style.height = '100%';
         return (
             <div
-                id = {id}
-                className = {className}
-                style = {wrapStyle0}
-                data-defaultVisible = {this.state.defaultVisible}
-                data-type = {this.state.type}
-                title = {this.state.title}
+                id={id}
+                className={className}
+                style={wrapStyle0}
+                data-defaultVisible={this.state.defaultVisible}
+                data-type={this.state.type}
+                title={this.state.title}
             >
                 <div
-                    id = {id2}
-                    style = {wrapStyle}
+                    id={id2}
+                    style={wrapStyle}
                 >
                     <div
-                        id = {id3}
-                        style = {style}
+                        id={id3}
+                        style={style}
                     >
                         {this.props.children}
                     </div>
@@ -167,8 +167,9 @@ var ReactRespond = React.createClass({
             this.needSetting();
         })
     },
-    setCell: function () {
+    setCell: function (reTry) {
         var cellsWrap = document.getElementById('cells'),
+            RRWrap = document.getElementById('__RR_WRAP__'),
             cells = cellsWrap.childNodes,
             fixes = document.getElementById('fixes'),
             wrapW = Math.round(fixes.offsetWidth),
@@ -220,6 +221,34 @@ var ReactRespond = React.createClass({
                 ReactRespond._.insertClear(cellsWrap, (o + i))
             })
         }
+        /**
+         * reTry == 0 需要检验cells容器的高度，是否已经超过了wrap的高度
+         * true return 1；需要重新重置整体宽度，因为出现了滚动条
+         * false return 2
+         */
+        var hasScroll = ReactRespond._var.hasScroll,
+            _hasScroll = 0;
+        if (reTry == 0) {
+            var cellsWrapH = cellsWrap.offsetHeight - parseInt(document.getElementById('__RR__').style.height);
+            if (cellsWrapH > 0) {
+                ReactRespond._var.hasScroll = _hasScroll = 1;
+                console.log('高了', cellsWrapH);
+            } else {
+                ReactRespond._var.hasScroll = _hasScroll = 0;
+                console.log('不高', cellsWrapH);
+            }
+            if (hasScroll == _hasScroll) {
+                console.log('没有变化，不需要重置', document.getElementById('__RR_Width__').offsetWidth);
+                return 2
+            } else {
+                console.log('有变化，需要重置', document.getElementById('__RR_Width__').offsetWidth);
+                return 1
+            }
+        } else if (reTry == 1) {
+            console.log('已经重置过了', document.getElementById('__RR_Width__').offsetWidth);
+            return 2
+        }
+
     },
     setFixedCells: function (self, wrap, curSize) {
         var node = ReactRespond._.getFixes(),
@@ -392,24 +421,44 @@ var ReactRespond = React.createClass({
             })
         }
         var fixes = ReactRespond._.getFixes();
-        console.log("fixes", fixes);
         var elm = {
             self: self,
-            fixes: fixes
-        }
-        this.setting(elm)
+            fixes: fixes,
+            wrap: wrap,
+            curSize: _w || curSize
+        };
+
+        this.setting(elm);
         //this.setFixedCells(self, wrap, _w || curSize);
         //this.setCell(self, wrap, _w || curSize)
     },
-    setting:function(elm){
-        var self = elm.self,
+    setting: function (elm) {
+        var _this = this,
+            reTry = 0,              //0：需要判断；1：需要reTry；2：不需要reTry
+            self = elm.self,
+            wrap = elm.wrap,
+            respond = ReactRespond._.respond[elm.curSize],
             fixes = elm.fixes,
             fixTop = fixes[0] || false,
             fixRight = fixes[1] || false,
             fixBottom = fixes[2] || false,
             fixLeft = fixes[3] || false;
 
-        ReactRespond._.setY(self,fixTop.offsetHeight,fixBottom.offsetHeight,true)
+        function setter() {
+            ReactRespond._.setY(self, fixTop.offsetHeight, fixBottom.offsetHeight, true);
+            ReactRespond._.setX(wrap, fixLeft.offsetWidth, fixRight.offsetWidth, respond)
+            reTry = _this.setCell(reTry);
+            if (reTry == 1) {
+                return '需要重置'
+            }
+        }
+
+        if (reTry !== 2) {
+            setter()
+        }
+        if (reTry !== 2) {
+            setter()
+        }
     },
     onScroll: function (target, wrap) {
         var scrollTop = target.scrollTop,
@@ -510,7 +559,7 @@ var ReactRespond = React.createClass({
                 console.error('ReactRespond组件中只能包含RRCell或者RRFix子组件，或者以‘_’或大写字母开头的变量名引用组件，其余的元素都会被删除');
             }
         }
-        this.needSetting();
+        _this.needSetting();
         window.onresize = function () {
             _this.needSetting()
         };
@@ -533,24 +582,24 @@ var ReactRespond = React.createClass({
                         <div>
                             {fixLeft ?
                                 <SwitchBtn
-                                    id = 'leftSwitchBtn'
-                                    icoPos = 'left'
-                                    show = {fixLeft.visible}
-                                    type = 'left'
-                                    opened = {_this.opened}
-                                    closed = {_this.closed}
-                                    visible = {show}
-                                    title = {fixLeft.title}
+                                    id='leftSwitchBtn'
+                                    icoPos='left'
+                                    show={fixLeft.visible}
+                                    type='left'
+                                    opened={_this.opened}
+                                    closed={_this.closed}
+                                    visible={show}
+                                    title={fixLeft.title}
                                 /> : ''}
                             {fixRight ?
                                 <SwitchBtn
-                                    id = 'rightSwitchBtn'
-                                    show = {fixRight.visible}
-                                    type = 'right'
-                                    opened = {_this.opened}
-                                    closed = {_this.closed}
-                                    visible = {show}
-                                    title = {fixRight.title}
+                                    id='rightSwitchBtn'
+                                    show={fixRight.visible}
+                                    type='right'
+                                    opened={_this.opened}
+                                    closed={_this.closed}
+                                    visible={show}
+                                    title={fixRight.title}
                                 /> : ''}
                         </div>
                     )
@@ -559,7 +608,7 @@ var ReactRespond = React.createClass({
             mainStyle = {
                 overflow: 'hidden',
                 overflowX: 'hidden',
-                overflowY: 'scroll',
+                overflowY: 'auto',
                 position: 'relative',
                 backgroundColor: '#fff'
             },
@@ -573,49 +622,77 @@ var ReactRespond = React.createClass({
             };
         return (
             <div
-                id = {this.state.id}
-                className = {`__RR__ ${this.state.curSize}`}
-                style = {mainStyle}
+                id={this.state.id}
+                className={`__RR__ ${this.state.curSize}`}
+                style={mainStyle}
             >
                 {sideBarController}
                 <div
-                    id = "__RR_WRAP__"
-                    style = {wrapStyle}
+                    id="__RR_WRAP__"
+                    style={wrapStyle}
                 >
                     <div
-                        id = "cells"
-                        style = {cellsWrapStyle}
+                        id="cells"
+                        style={cellsWrapStyle}
                     ></div>
-                    <div id = "fixes"></div>
+                    <div id="fixes"></div>
                     {this.props.children}
                 </div>
-                <div id = "__PM_Width_" title = "用来侦测可用宽度常量"></div>
+                <div id="__RR_Width__" title="用来侦测可用宽度常量"></div>
             </div>
         )
     }
 });
 ReactRespond._ = {
     setY: function (t, pT, pB, win) {
-        console.log('win',win)
         var realH = 0,
             p = t.parentNode,
-            _h = win && window.innerHeight || p &&  p.offsetHeight || t.offsetHeight,
+            _h = win && window.innerHeight || p && p.offsetHeight || t.nodeType && t.offsetHeight,
             _pT = pT && parseInt(pT) || 0,
             _pB = pB && parseInt(pB) || 0;
-        console.log(p,_h)
         if (t.nodeType) {
             realH = _h - _pT - _pB;
             if (realH > 0) {
                 t.style.height = realH + 'px';
             } else {
-                t.style.height = '0';
+                t.style.height = 'auto';
             }
             t.style.paddingTop = _pT + 'px';
             t.style.paddingBottom = _pB + 'px';
         }
     },
-    setX: function (t, w, pl, pr) {
-
+    /**
+     * 计算RR_WRAP的宽度，定义padding
+     * @param t
+     * @param pL
+     * @param pR
+     * @param curSize
+     */
+    setX: function (t, pL, pR, respond) {
+        var realW = 0,
+            hideSideBar = respond.hideSideBar,
+            resW = respond.width,
+            _curSize = (resW < 1 && resW > 0) ? resW : 1,
+            p = document.getElementById('__RR_Width__'),
+            _w = p.offsetWidth * _curSize || t.offsetWidth * _curSize,
+            _pL = pL && parseInt(pL) || 0,
+            _pR = pR && parseInt(pR) || 0;
+        if (t.nodeType) {
+            if(!hideSideBar){
+                t.style.paddingLeft = _pL + 'px';
+                t.style.paddingRight = _pR + 'px';
+                realW = _w - _pL - _pR;
+            }else{
+                t.style.paddingLeft = '0';
+                t.style.paddingRight = '0';
+                realW = _w ;
+            }
+            if (realW > 0) {
+                t.style.width = realW + 'px';
+            } else {
+                t.style.width = 'auto';
+            }
+        }
     },
     setSize: function (target, padding, type) {
         var _p = parseInt(padding);
@@ -785,7 +862,8 @@ ReactRespond._ = {
     }
 };
 ReactRespond._var = {
-    _scrollTop: 0
+    _scrollTop: 0,
+    hasScroll: 0
 };
 var SwitchBtn = React.createClass({
     getInitialState: function () {
@@ -892,27 +970,27 @@ var SwitchBtn = React.createClass({
             btnClassName = this.state.show ? 'toClose' : 'toOpen';
         return (
             <div
-                id = {this.state.id}
-                style = {mainStyle}
+                id={this.state.id}
+                style={mainStyle}
             >
-                <a href = "###"
-                   className = {btnClassName}
-                   onClick = {this.trigger}
-                   style = {btnStyle}
-                   data-type = {this.state.type}
+                <a href="###"
+                   className={btnClassName}
+                   onClick={this.trigger}
+                   style={btnStyle}
+                   data-type={this.state.type}
                 >
                     {this.state.title}
                     <span
-                        id = {`${this.state.id}_line`}
-                        style = {lineStyle}
+                        id={`${this.state.id}_line`}
+                        style={lineStyle}
                     >
                         <i
-                            id = {`${this.state.id}_lineTop`}
-                            style = {lineStyleTop}
+                            id={`${this.state.id}_lineTop`}
+                            style={lineStyleTop}
                         />
                         <i
-                            id = {`${this.state.id}_lineBottom`}
-                            style = {lineStyleBottom}
+                            id={`${this.state.id}_lineBottom`}
+                            style={lineStyleBottom}
                         />
                     </span>
                 </a>

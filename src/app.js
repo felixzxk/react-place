@@ -8,7 +8,6 @@ import ReactDOM from 'react-dom';
 import ReactRespond from './react-respond';
 const RRCell = ReactRespond.RRCell,
     RRFix = ReactRespond.RRFix;
-console.log('ddd')
 class MainApp extends React.Component {
     constructor(props) {
         super(props);
@@ -51,8 +50,8 @@ class MainApp extends React.Component {
     render() {
         const ds = {
                 textAlign: 'center',
-                lineHeight: '200px',
-                height: '200px'
+                lineHeight: '100px',
+                height: '100px'
             },
             respond = {
                 lg: {
