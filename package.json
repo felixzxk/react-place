@@ -1,5 +1,5 @@
 {
-  "name": "demo-for-react-respond",
+  "name": "demo-react-respond",
   "version": "0.1.0",
   "description": "placement",
   "main": "index.js",
@@ -26,7 +26,7 @@
   "dependencies": {
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
-    "react-respond": "^1.0.1"
+    "react-respond": "1.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.17.0",
