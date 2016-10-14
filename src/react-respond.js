@@ -25,7 +25,7 @@ var RRCell = React.createClass({
         cellContStyle.width = '100%';
         return (
             <div
-                className = 'PMCell'
+                className = 'RRCell'
                 style = {cellWrapStyle}
                 data-size = {this.state.size}
                 size = {this.state.size}
@@ -91,10 +91,10 @@ var RRFix = React.createClass({
                         return 'Top'
                 }
             })(this.state.type),
-            id = 'PMFix' + type,
-            id2 = '_PMFix' + type,
-            id3 = '__PMFix' + type,
-            className = 'PMFix' + type + ' PMFixes',
+            id = 'RRFix' + type,
+            id2 = '_RRFix' + type,
+            id3 = '__RRFix' + type,
+            className = 'RRFix' + type + ' RRFixes',
             isShow = this.state.defaultVisible ? 'block' : 'none',
             style = this.state.style || {},
             wrapStyle0 = {
@@ -140,7 +140,7 @@ var ReactRespond = React.createClass({
     getInitialState: function () {
         var respond = ReactRespond._.getRespond(ReactRespond._.respond, this.props.respond);
         return {
-            id: this.props.id || '__PM__',
+            id: this.props.id || '__RR__',
             margin: this.props.margin || 0,
             potion: this.props.potion || 12,
             sameHeight: this.props.sameHeight || 'auto',
@@ -248,7 +248,7 @@ var ReactRespond = React.createClass({
             var _top = node[0] && (node[0].offsetHeight + 'px') || 0;
 
             function _topD(btn) {
-                var _top_ = document.getElementById('_PMFixTop'),
+                var _top_ = document.getElementById('_RRFixTop'),
                     topD = '10px';
                 if (_top_) {
                     var _topH = _top_.offsetHeight,
@@ -268,7 +268,7 @@ var ReactRespond = React.createClass({
                         title = n.title;
                     switch (i) {
                         case 0:
-                            var topWrap = document.getElementById('_PMFixTop');
+                            var topWrap = document.getElementById('_RRFixTop');
                             topWrap.style.width = wrapWidth;
                             n.style.left = 0;
                             n.style.top = 0;
@@ -286,7 +286,7 @@ var ReactRespond = React.createClass({
                             }
                             return height + 'px';
                         case 2:
-                            var bottomWrap = document.getElementById('_PMFixBottom');
+                            var bottomWrap = document.getElementById('_RRFixBottom');
                             bottomWrap.style.width = wrapWidth;
                             n.style.left = 0;
                             n.style.bottom = 0;
@@ -305,7 +305,7 @@ var ReactRespond = React.createClass({
                             return height + 'px';
                         case 1:
                             var rightSwitchBtn = document.getElementById('rightSwitchBtn'),
-                                scrollWidth = document.getElementById('__PM__').offsetWidth - _wrapW;
+                                scrollWidth = document.getElementById('__RR__').offsetWidth - _wrapW;
                             if (rightSwitchBtn) {
                                 if (_wrapWidth !== 'auto') {
                                     rightSwitchBtn.style.right = (marginLeft + scrollWidth) + 'px'
@@ -375,7 +375,7 @@ var ReactRespond = React.createClass({
     },
     needSetting: function () {
         var self = document.getElementById(this.state.id),
-            wrap = document.getElementById('__PM_WRAP__'),
+            wrap = document.getElementById('__RR_WRAP__'),
             parent = self && self.parentNode || false,
             res = this.state.respond,
             potion = this.props.potion || 12,
@@ -391,23 +391,26 @@ var ReactRespond = React.createClass({
                 this.onRespond(_w, this.state.potion, this.state.sameSize)
             })
         }
-        var _pm_ = document.getElementById('__PM__');
-        this.setFixedCells(self, wrap, _w || curSize);
-        this.setCell(self, wrap, _w || curSize)
-    },/*
-    _onScroll: function (e) {
-
-        e = e || window.event;
-        var target = e.target;
-
-        console.log(target.className == 'PMCell')
-        if (e.wheelDelta) {//IE/Opera/Chrome
-            console.log(e.wheelDelta)
-        } else if (e.detail) {//Firefox
-            console.log(e.detail)
+        var fixes = ReactRespond._.getFixes();
+        console.log("fixes", fixes);
+        var elm = {
+            self: self,
+            fixes: fixes
         }
-        console.log(e)
-    },*/
+        this.setting(elm)
+        //this.setFixedCells(self, wrap, _w || curSize);
+        //this.setCell(self, wrap, _w || curSize)
+    },
+    setting:function(elm){
+        var self = elm.self,
+            fixes = elm.fixes,
+            fixTop = fixes[0] || false,
+            fixRight = fixes[1] || false,
+            fixBottom = fixes[2] || false,
+            fixLeft = fixes[3] || false;
+
+        ReactRespond._.setY(self,fixTop.offsetHeight,fixBottom.offsetHeight,true)
+    },
     onScroll: function (target, wrap) {
         var scrollTop = target.scrollTop,
             targetPT = parseInt(target.style.paddingTop),
@@ -451,7 +454,7 @@ var ReactRespond = React.createClass({
         if (!type) {
             return
         }
-        var targetId = 'PMFix' + type.substring(0, 1).toUpperCase() + type.substring(1),
+        var targetId = 'RRFix' + type.substring(0, 1).toUpperCase() + type.substring(1),
             hasThis = document.getElementById(targetId);
         if (!!hasThis) {
             var curSize = this.state.curSize,
@@ -488,13 +491,13 @@ var ReactRespond = React.createClass({
         body.width = '100%';
         body.overflow = 'hidden';
         var _this = this,
-            wrap = document.getElementById('__PM_WRAP__'),
+            wrap = document.getElementById('__RR_WRAP__'),
             children = wrap.children,
-            __PM__ = document.getElementById(this.state.id),
+            __RR__ = document.getElementById(this.state.id),
             cellsWrap = document.getElementById('cells'),
             fixesWrap = document.getElementById('fixes'),
-            regFix = /PMFix/,
-            regCell = /PMCell/;
+            regFix = /RRFix/,
+            regCell = /RRCell/;
         //需要先将不同类型的子元素放入相应的元素类型的容器里
         while (children[2]) {
             var className = children[2].className;
@@ -503,27 +506,17 @@ var ReactRespond = React.createClass({
             } else if (regFix.test(className)) {
                 fixesWrap.appendChild(children[2]);
             } else {
-                document.getElementById('__PM_WRAP__').removeChild(children[2]);
-                console.error('ReactRespond组件中只能包含PMCell或者PMFix子组件，或者以‘_’或大写字母开头的变量名引用组件，其余的元素都会被删除');
+                document.getElementById('__RR_WRAP__').removeChild(children[2]);
+                console.error('ReactRespond组件中只能包含RRCell或者RRFix子组件，或者以‘_’或大写字母开头的变量名引用组件，其余的元素都会被删除');
             }
         }
         this.needSetting();
         window.onresize = function () {
             _this.needSetting()
         };
-        __PM__.onscroll = function () {
+        __RR__.onscroll = function () {
             _this.onScroll(this, wrap)
-        };/*
-        //window.onmousewheel = document.onmousewheel = _this._onScroll
-        console.log('document.body.onmousewheel', document.body.onmousewheel,document.body)
-        console.log('document.body.onmousewheel', document.body.DOMMouseScroll)
-        window.onmousewheel = function (event) {
-            event = event || window.event;
-            _this._onScroll(event)
         };
-        document.body.addEventListener("DOMMouseScroll", function (event) {
-            _this._onScroll(event)
-        });*/
         this.onLoaded();
     },
     render: function () {
@@ -581,12 +574,12 @@ var ReactRespond = React.createClass({
         return (
             <div
                 id = {this.state.id}
-                className = {`__PM__ ${this.state.curSize}`}
+                className = {`__RR__ ${this.state.curSize}`}
                 style = {mainStyle}
             >
                 {sideBarController}
                 <div
-                    id = "__PM_WRAP__"
+                    id = "__RR_WRAP__"
                     style = {wrapStyle}
                 >
                     <div
@@ -602,6 +595,28 @@ var ReactRespond = React.createClass({
     }
 });
 ReactRespond._ = {
+    setY: function (t, pT, pB, win) {
+        console.log('win',win)
+        var realH = 0,
+            p = t.parentNode,
+            _h = win && window.innerHeight || p &&  p.offsetHeight || t.offsetHeight,
+            _pT = pT && parseInt(pT) || 0,
+            _pB = pB && parseInt(pB) || 0;
+        console.log(p,_h)
+        if (t.nodeType) {
+            realH = _h - _pT - _pB;
+            if (realH > 0) {
+                t.style.height = realH + 'px';
+            } else {
+                t.style.height = '0';
+            }
+            t.style.paddingTop = _pT + 'px';
+            t.style.paddingBottom = _pB + 'px';
+        }
+    },
+    setX: function (t, w, pl, pr) {
+
+    },
     setSize: function (target, padding, type) {
         var _p = parseInt(padding);
         if (type == 'x') {
@@ -656,10 +671,10 @@ ReactRespond._ = {
      * @returns {Array}，[nodeTop, nodeRight, nodeBottom, nodeLeft]，返回获取到的dom节点，如果该位置没有节点则返回 undefined
      **/
     getFixes: function (which) {
-        var top = document.getElementsByClassName('PMFixTop'),
-            right = document.getElementsByClassName('PMFixRight'),
-            bottom = document.getElementsByClassName('PMFixBottom'),
-            left = document.getElementsByClassName('PMFixLeft');
+        var top = document.getElementsByClassName('RRFixTop'),
+            right = document.getElementsByClassName('RRFixRight'),
+            bottom = document.getElementsByClassName('RRFixBottom'),
+            left = document.getElementsByClassName('RRFixLeft');
         if (top && top.length > 1) {
             console.error('fixes的元素同一方向只允许存在一个，top方向有多个fixes元素存在')
         }
