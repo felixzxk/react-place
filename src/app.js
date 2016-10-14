@@ -1,6 +1,7 @@
 /**
  * Created by zhaoxk on 2016/10/12.
  */
+//require('core-js');
 import React from 'react';
 import ReactDOM from 'react-dom';
 //import ReactRespond from 'react-respond'
@@ -68,7 +69,7 @@ class MainApp extends React.Component {
                     onLoading = {this.onLoading.bind(this)}
                     onLoaded = {this.onLoaded.bind(this)}
                     onRespond = {this.onRespond.bind(this)}
-                    sameSize = {4}
+                    sameHeight = {260}
                 >
                     <RRCell
                         size = {6}
