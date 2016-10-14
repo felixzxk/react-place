@@ -33,9 +33,9 @@ class MainApp extends React.Component {
         //console.log('下滚', n)
     }
 
-    /*onScroll(n){
+    onScroll(n){
      console.log('滚动中',n)
-    }*/
+    }
     onLoading() {
         //console.log('加载中...')
     }
@@ -51,8 +51,8 @@ class MainApp extends React.Component {
     render() {
         const ds = {
                 textAlign: 'center',
-                lineHeight: '150px',
-                height: '150px'
+                lineHeight: '200px',
+                height: '200px'
             },
             respond = {
                 lg: {
@@ -66,10 +66,10 @@ class MainApp extends React.Component {
                     respond = {respond}
                     onScrollTop = {this.onScrollTop.bind(this)}
                     onScrollBottom = {this.onScrollBottom.bind(this)}
+                    onScroll = {this.onScroll.bind(this)}
                     onLoading = {this.onLoading.bind(this)}
                     onLoaded = {this.onLoaded.bind(this)}
                     onRespond = {this.onRespond.bind(this)}
-                    sameHeight = {260}
                 >
                     <RRCell
                         size = {6}
