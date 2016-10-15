@@ -25,13 +25,13 @@ var RRCell = React.createClass({
         cellContStyle.width = '100%';
         return (
             <div
-                className='RRCell'
-                style={cellWrapStyle}
-                data-size={this.state.size}
-                size={this.state.size}
+                className = 'RRCell'
+                style = {cellWrapStyle}
+                data-size = {this.state.size}
+                size = {this.state.size}
             >
                 <div
-                    style={cellContStyle}
+                    style = {cellContStyle}
                 >
                     {this.props.children}
                 </div>
@@ -114,20 +114,20 @@ var RRFix = React.createClass({
         style.height = '100%';
         return (
             <div
-                id={id}
-                className={className}
-                style={wrapStyle0}
-                data-defaultVisible={this.state.defaultVisible}
-                data-type={this.state.type}
-                title={this.state.title}
+                id = {id}
+                className = {className}
+                style = {wrapStyle0}
+                data-defaultVisible = {this.state.defaultVisible}
+                data-type = {this.state.type}
+                title = {this.state.title}
             >
                 <div
-                    id={id2}
-                    style={wrapStyle}
+                    id = {id2}
+                    style = {wrapStyle}
                 >
                     <div
-                        id={id3}
-                        style={style}
+                        id = {id3}
+                        style = {style}
                     >
                         {this.props.children}
                     </div>
@@ -167,13 +167,13 @@ var ReactRespond = React.createClass({
             this.needSetting();
         })
     },
-    setCell: function (reTry) {
+    setCell: function (reTry, respond) {
         var cellsWrap = document.getElementById('cells'),
             RRWrap = document.getElementById('__RR_WRAP__'),
             cells = cellsWrap.childNodes,
             fixes = document.getElementById('fixes'),
             wrapW = Math.round(fixes.offsetWidth),
-            potion = this.state.potion,
+            potion = respond.potion || this.state.potion,
             margin = this.state.margin,
             height = typeof this.state.sameHeight !== 'number' ? this.state.sameHeight : this.state.sameHeight + 'px',
             cellUnit = Math.floor((wrapW - ((potion + 1) * margin)) / potion),
@@ -195,8 +195,8 @@ var ReactRespond = React.createClass({
             })
         }
         for (var i = 0; i < cells.length; i++) {
-            var _size = parseInt(_dataset(cells[i], 'size'));
-            var size = this.state.sameSize == 0 ? _size : this.state.sameSize;
+            var _size = parseInt(_dataset(cells[i], 'size')),
+                size = respond.unifySize == 0 ? _size : respond.unifySize;
             if (size > potion) size = potion;
             if (cells[i].className != '_clear_') {
                 cells[i].style.width = setCellWidth(size);
@@ -250,7 +250,130 @@ var ReactRespond = React.createClass({
         }
 
     },
-    setFixedCells: function (self, wrap, curSize) {
+    setFixedCells: function (fixes, wrap, respond) {
+        var RRWidth = document.getElementById('__RR_Width__').offsetWidth,
+            heightWrap = document.getElementById('__RR__').style.height,
+            setSide = (function (top) {
+                var sideProps = {};
+                if (top) {
+                    sideProps.top = top.offsetHeight + 'px'
+                } else {
+                    sideProps.top = '0'
+                }
+                sideProps.height = heightWrap;
+                return sideProps
+            })(fixes[0]),
+            fixProps = this.state.fixProps || {
+                    count: 0,
+                    ready: false
+                },
+            setFixProps = function (i) {
+                var pos = (function (i) {
+                        switch (i) {
+                            case 0:
+                                return 'top';
+                            case 1:
+                                return 'right';
+                            case 2:
+                                return 'bottom';
+                            case 3:
+                                return 'left';
+                            default:
+                                return 'top';
+                        }
+                    })(i),
+                    node = fixes[i],
+                    _defaultVisible = _dataset(node, 'defaultVisible'),
+                    defaultVisible = _defaultVisible !== false,
+                    title = node.title,
+                    type = _dataset(node, 'type');
+                if (!fixProps[pos]) {
+                    fixProps[pos] = {
+                        visible: defaultVisible,
+                        pin: false,
+                        title: title
+                    };
+                    fixProps.count += 1;
+                    node.style.display = defaultVisible ? '' : 'none';
+                } else {
+                    console.log('fixProps[pos]', fixProps[pos])
+                    node.style.display = fixProps[pos].visible ? '' : 'none';
+                }
+                if (i == 1 || i == 3) {
+                    var leftDistance = 0;
+                    switch (i) {
+                        case 1:
+                            var rightSwitchBtn = document.getElementById('rightSwitchBtn'),
+                                btnWidth = rightSwitchBtn && rightSwitchBtn.offsetWidth;
+                            leftDistance = wrap.offsetLeft + wrap.offsetWidth;
+                            if (rightSwitchBtn) {
+                                rightSwitchBtn.style.left = (leftDistance - btnWidth) + 'px';
+                                rightSwitchBtn.style.top = _topD(rightSwitchBtn)
+                            }
+                            fixes[1].style.left = (wrap.offsetLeft + wrap.offsetWidth - fixes[1].offsetWidth) + 'px';
+                            break;
+                        case 3:
+                            var leftSwitchBtn = document.getElementById('leftSwitchBtn');
+                            leftDistance = wrap.offsetLeft;
+                            if (leftSwitchBtn) {
+                                leftSwitchBtn.style.left = leftDistance + 'px';
+                                leftSwitchBtn.style.top = _topD(leftDistance)
+                            }
+                            fixes[3].style.left = wrap.offsetLeft + 'px';
+                            break;
+                    }
+                }
+            },
+            _topD = function (btn) {
+                var _top_ = document.getElementById('_RRFixTop'),
+                    topD = '10px';
+                if (_top_) {
+                    var _topH = _top_.offsetHeight,
+                        _btnH = btn.offsetHeight,
+                        _poor = _topH - _btnH;
+                    topD = _poor > 0 ? _poor / 2 : 10;
+                    topD += 'px'
+                }
+                return topD
+            };
+        for (var fix = 0; fix < fixes.length; fix++) {
+            var _f = fixes[fix];
+            if (_f) {
+                switch (fix) {
+                    case 0:
+                        _f.style.top = 0;
+                        _f.style.left = 0;
+                        _f.style.width = RRWidth + 'px';
+                        setFixProps(0);
+                        break;
+                    case 2://底部
+                        _f.style.bottom = 0;
+                        _f.style.left = 0;
+                        _f.style.width = RRWidth + 'px';
+                        setFixProps(2);
+                        break;
+                    case 1://右边
+                        _f.style.height = setSide.height;
+                        _f.style.top = setSide.top;
+                        setFixProps(1);
+                        break;
+                    case 3://左边
+                        _f.style.height = setSide.height;
+                        _f.style.top = setSide.top;
+                        setFixProps(3);
+                        break;
+                }
+            }
+        }
+
+        if (!fixProps.ready) {
+            fixProps.ready = true;
+            this.setState({
+                fixProps: fixProps
+            });
+        }
+    },
+    _setFixedCells: function (self, wrap, curSize) {
         var node = ReactRespond._.getFixes(),
             selfH = self.offsetHeight,
             curW = this.state.respond[curSize].width,
@@ -263,7 +386,6 @@ var ReactRespond = React.createClass({
             _wrapWidth = wrapW == 'auto' ? wrapW : wrapW,
             wrapWidth = _wrapWidth !== 'auto' ? _wrapWidth + 'px' : 'auto';
         wrap.style.width = wrapWidth;
-        console.log('wrapWidth', wrapWidth)
         var fixProps = this.state.fixProps;
         var pds = (function () {
             if (fixProps == undefined) {
@@ -425,7 +547,8 @@ var ReactRespond = React.createClass({
             self: self,
             fixes: fixes,
             wrap: wrap,
-            curSize: _w || curSize
+            curSize: _w || curSize,
+            fixProps: this.state.fixProps || false
         };
 
         this.setting(elm);
@@ -438,6 +561,7 @@ var ReactRespond = React.createClass({
             self = elm.self,
             wrap = elm.wrap,
             respond = ReactRespond._.respond[elm.curSize],
+            fixProps = elm.fixProps,
             fixes = elm.fixes,
             fixTop = fixes[0] || false,
             fixRight = fixes[1] || false,
@@ -445,19 +569,52 @@ var ReactRespond = React.createClass({
             fixLeft = fixes[3] || false;
 
         function setter() {
-            ReactRespond._.setY(self, fixTop.offsetHeight, fixBottom.offsetHeight, true);
-            ReactRespond._.setX(wrap, fixLeft.offsetWidth, fixRight.offsetWidth, respond)
-            reTry = _this.setCell(reTry);
+            console.log('fixTop && fixTop.style.height', fixTop && fixTop.style.height, 'ddddd')
+            function getSize(t) {
+                var _size = {
+                    h: 0,
+                    w: 0
+                };
+                if (t) {
+                    var sh = t.style.height,
+                        sw = t.style.width;
+                    if (sh == 'auto') {
+                        _size.h = t.offsetHeight
+                    } else {
+                        _size.h = parseInt(sh)
+                    }
+                    if (sw == 'auto') {
+                        _size.w = t.offsetWidth
+                    } else {
+                        _size.w = parseInt(sw)
+                    }
+                }
+                return _size
+            };
+            ReactRespond._.setY(
+                self,
+                getSize(fixTop).h,
+                getSize(fixBottom).h,
+                true
+            );
+            ReactRespond._.setX(
+                wrap,
+                getSize(fixLeft).w,
+                getSize(fixRight).w,
+                respond,
+                fixProps
+            );
+            reTry = _this.setCell(reTry, respond);
             if (reTry == 1) {
                 return '需要重置'
             }
+            _this.setFixedCells(fixes, wrap, respond);
         }
 
-        if (reTry !== 2) {
-            setter()
-        }
-        if (reTry !== 2) {
-            setter()
+        for (var re = 0; re < 2; re++) {
+            if (reTry !== 2) {
+                setter()
+            }
         }
     },
     onScroll: function (target, wrap) {
@@ -582,24 +739,24 @@ var ReactRespond = React.createClass({
                         <div>
                             {fixLeft ?
                                 <SwitchBtn
-                                    id='leftSwitchBtn'
-                                    icoPos='left'
-                                    show={fixLeft.visible}
-                                    type='left'
-                                    opened={_this.opened}
-                                    closed={_this.closed}
-                                    visible={show}
-                                    title={fixLeft.title}
+                                    id = 'leftSwitchBtn'
+                                    icoPos = 'left'
+                                    show = {fixLeft.visible}
+                                    type = 'left'
+                                    opened = {_this.opened}
+                                    closed = {_this.closed}
+                                    visible = {show}
+                                    title = {fixLeft.title}
                                 /> : ''}
                             {fixRight ?
                                 <SwitchBtn
-                                    id='rightSwitchBtn'
-                                    show={fixRight.visible}
-                                    type='right'
-                                    opened={_this.opened}
-                                    closed={_this.closed}
-                                    visible={show}
-                                    title={fixRight.title}
+                                    id = 'rightSwitchBtn'
+                                    show = {fixRight.visible}
+                                    type = 'right'
+                                    opened = {_this.opened}
+                                    closed = {_this.closed}
+                                    visible = {show}
+                                    title = {fixRight.title}
                                 /> : ''}
                         </div>
                     )
@@ -622,23 +779,23 @@ var ReactRespond = React.createClass({
             };
         return (
             <div
-                id={this.state.id}
-                className={`__RR__ ${this.state.curSize}`}
-                style={mainStyle}
+                id = {this.state.id}
+                className = {`__RR__ ${this.state.curSize}`}
+                style = {mainStyle}
             >
                 {sideBarController}
                 <div
-                    id="__RR_WRAP__"
-                    style={wrapStyle}
+                    id = "__RR_WRAP__"
+                    style = {wrapStyle}
                 >
                     <div
-                        id="cells"
-                        style={cellsWrapStyle}
+                        id = "cells"
+                        style = {cellsWrapStyle}
                     ></div>
-                    <div id="fixes"></div>
+                    <div id = "fixes"></div>
                     {this.props.children}
                 </div>
-                <div id="__RR_Width__" title="用来侦测可用宽度常量"></div>
+                <div id = "__RR_Width__" title = "用来侦测可用宽度常量"></div>
             </div>
         )
     }
@@ -661,14 +818,7 @@ ReactRespond._ = {
             t.style.paddingBottom = _pB + 'px';
         }
     },
-    /**
-     * 计算RR_WRAP的宽度，定义padding
-     * @param t
-     * @param pL
-     * @param pR
-     * @param curSize
-     */
-    setX: function (t, pL, pR, respond) {
+    setX: function (t, pL, pR, respond, fixProps) {
         var realW = 0,
             hideSideBar = respond.hideSideBar,
             resW = respond.width,
@@ -676,16 +826,39 @@ ReactRespond._ = {
             p = document.getElementById('__RR_Width__'),
             _w = p.offsetWidth * _curSize || t.offsetWidth * _curSize,
             _pL = pL && parseInt(pL) || 0,
-            _pR = pR && parseInt(pR) || 0;
+            _pR = pR && parseInt(pR) || 0,
+            paddingX = (function () {
+                var _padding = {
+                    left: 0,
+                    right: 0
+                };
+                console.log('pL', pL)
+                if (pL) {
+                    if (fixProps && fixProps['left'] && !fixProps['left'].pin && fixProps['left'].visible) {
+
+                        _padding.left = pL;
+                    } else {
+                        _padding.left = 0;
+                    }
+                }
+                if (pR) {
+                    if (fixProps && fixProps['right'] && !fixProps['right'].pin && fixProps['right'].visible) {
+                        _padding.right = pR;
+                    } else {
+                        _padding.right = 0;
+                    }
+                }
+                return _padding
+            })();
         if (t.nodeType) {
-            if(!hideSideBar){
-                t.style.paddingLeft = _pL + 'px';
-                t.style.paddingRight = _pR + 'px';
-                realW = _w - _pL - _pR;
-            }else{
+            if (!hideSideBar) {
+                t.style.paddingLeft = paddingX.left + 'px';
+                t.style.paddingRight = paddingX.right + 'px';
+                realW = _w - paddingX.left - paddingX.right;
+            } else {
                 t.style.paddingLeft = '0';
                 t.style.paddingRight = '0';
-                realW = _w ;
+                realW = _w;
             }
             if (realW > 0) {
                 t.style.width = realW + 'px';
@@ -970,27 +1143,27 @@ var SwitchBtn = React.createClass({
             btnClassName = this.state.show ? 'toClose' : 'toOpen';
         return (
             <div
-                id={this.state.id}
-                style={mainStyle}
+                id = {this.state.id}
+                style = {mainStyle}
             >
-                <a href="###"
-                   className={btnClassName}
-                   onClick={this.trigger}
-                   style={btnStyle}
-                   data-type={this.state.type}
+                <a href = "###"
+                   className = {btnClassName}
+                   onClick = {this.trigger}
+                   style = {btnStyle}
+                   data-type = {this.state.type}
                 >
                     {this.state.title}
                     <span
-                        id={`${this.state.id}_line`}
-                        style={lineStyle}
+                        id = {`${this.state.id}_line`}
+                        style = {lineStyle}
                     >
                         <i
-                            id={`${this.state.id}_lineTop`}
-                            style={lineStyleTop}
+                            id = {`${this.state.id}_lineTop`}
+                            style = {lineStyleTop}
                         />
                         <i
-                            id={`${this.state.id}_lineBottom`}
-                            style={lineStyleBottom}
+                            id = {`${this.state.id}_lineBottom`}
+                            style = {lineStyleBottom}
                         />
                     </span>
                 </a>

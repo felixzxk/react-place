@@ -51,7 +51,7 @@ class MainApp extends React.Component {
         const ds = {
                 textAlign: 'center',
                 lineHeight: '100px',
-                height: '100px'
+                height: '120px'
             },
             respond = {
                 lg: {
