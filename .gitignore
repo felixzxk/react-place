@@ -8,3 +8,4 @@
 node_modules/
 .idea
 src/react-respond.js
+npm-debug.log
