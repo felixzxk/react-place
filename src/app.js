@@ -1,12 +1,19 @@
 /**
  * Created by zhaoxk on 2016/10/12.
  */
+//require('core-js');
 import React from 'react';
 import ReactDOM from 'react-dom';
+<<<<<<< HEAD
 //import ReactRespond from './react-respond';
 import ReactRespond from 'react-respond';
+=======
+//import ReactRespond from 'react-respond'
+import ReactRespond from './react-respond';
+>>>>>>> 7901001b7289237a55ecc0db96ae75071179827b
 const RRCell = ReactRespond.RRCell,
     RRFix = ReactRespond.RRFix;
+console.log('ddd')
 class MainApp extends React.Component {
     constructor(props) {
         super(props);
@@ -16,34 +23,38 @@ class MainApp extends React.Component {
     }
 
     onScrollTop() {
-        console.log('到顶了')
+        //console.log('到顶了')
     }
 
     onScrollBottom(n) {
-        console.log('到底了', n)
+        //console.log('到底了', n)
     }
 
     onScrollUp(n) {
-        console.log('上滚', n)
+        //console.log('上滚', n)
     }
 
     onScrollDown(n) {
-        console.log('下滚', n)
+        //console.log('下滚', n)
     }
 
-    /*onScroll(n){
+    onScroll(n){
      console.log('滚动中',n)
+<<<<<<< HEAD
      }*/
+=======
+    }
+>>>>>>> 7901001b7289237a55ecc0db96ae75071179827b
     onLoading() {
-        console.log('加载中...')
+        //console.log('加载中...')
     }
 
     onLoaded() {
-        console.log('加载完毕')
+        //console.log('加载完毕')
     }
 
     onRespond(a, b, c) {
-        console.log('onRespond', a, b, c);
+        //console.log('onRespond', a, b, c);
     }
 
     render() {
@@ -58,6 +69,7 @@ class MainApp extends React.Component {
                 }
             };
         return (
+<<<<<<< HEAD
             <ReactRespond
                 margin={5}
                 potion={12}
@@ -71,6 +83,18 @@ class MainApp extends React.Component {
             >
                 <RRCell
                     size={6}
+=======
+                <ReactRespond
+                    margin = {5}
+                    potion = {12}
+                    respond = {respond}
+                    onScrollTop = {this.onScrollTop.bind(this)}
+                    onScrollBottom = {this.onScrollBottom.bind(this)}
+                    onScroll = {this.onScroll.bind(this)}
+                    onLoading = {this.onLoading.bind(this)}
+                    onLoaded = {this.onLoaded.bind(this)}
+                    onRespond = {this.onRespond.bind(this)}
+>>>>>>> 7901001b7289237a55ecc0db96ae75071179827b
                 >
                     <div style={ds}>size:6</div>
                 </RRCell>

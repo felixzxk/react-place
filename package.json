@@ -1,5 +1,5 @@
 {
-  "name": "demo for react-respond",
+  "name": "demo-react-respond",
   "version": "0.1.0",
   "description": "placement",
   "main": "index.js",
@@ -40,6 +40,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/felixzxk/react-place"
+    "url": "https://github.com/felixzxk/react-respond"
   }
 }

@@ -28,6 +28,7 @@ var RRCell = React.createClass({
                 className = 'PMCell'
                 style = {cellWrapStyle}
                 data-size = {this.state.size}
+                size = {this.state.size}
             >
                 <div
                     style = {cellContStyle}
@@ -193,8 +194,8 @@ var ReactRespond = React.createClass({
             })
         }
         for (var i = 0; i < cells.length; i++) {
-            var size = this.state.sameSize == 0 ? parseInt(cells[i].dataset.size) : this.state.sameSize;
-            console.log('size',size);
+            var _size = parseInt(_dataset(cells[i], 'size'));
+            var size = this.state.sameSize == 0 ? _size : this.state.sameSize;
             if (size > potion) size = potion;
             if (cells[i].className != '_clear_') {
                 cells[i].style.width = setCellWidth(size);
@@ -206,7 +207,8 @@ var ReactRespond = React.createClass({
                 var poor = potion - count;
                 count = size;
                 if (poor > 0) {
-                    cells[i - 1].style.width = setCellWidth(parseInt(cells[i - 1].dataset.size) + poor)
+                    _size = parseInt(_dataset(cells[i - 1], 'size'));
+                    cells[i - 1].style.width = setCellWidth(_size + poor)
                 }
                 needClear.push(i);
             } else {
@@ -232,6 +234,7 @@ var ReactRespond = React.createClass({
             _wrapWidth = wrapW == 'auto' ? wrapW : wrapW,
             wrapWidth = _wrapWidth !== 'auto' ? _wrapWidth + 'px' : 'auto';
         wrap.style.width = wrapWidth;
+        console.log('wrapWidth', wrapWidth)
         var fixProps = this.state.fixProps;
         var pds = (function () {
             if (fixProps == undefined) {
@@ -259,7 +262,8 @@ var ReactRespond = React.createClass({
 
             return node.map(function (n, i) {
                 if (n) {
-                    var defaultVisible = n.dataset.defaultVisible !== false,
+                    var _defaultVisible = _dataset(n, 'defaultVisible');
+                    var defaultVisible = _defaultVisible !== false,
                         height = n.offsetHeight,
                         title = n.title;
                     switch (i) {
@@ -390,7 +394,20 @@ var ReactRespond = React.createClass({
         var _pm_ = document.getElementById('__PM__');
         this.setFixedCells(self, wrap, _w || curSize);
         this.setCell(self, wrap, _w || curSize)
-    },
+    },/*
+    _onScroll: function (e) {
+
+        e = e || window.event;
+        var target = e.target;
+
+        console.log(target.className == 'PMCell')
+        if (e.wheelDelta) {//IE/Opera/Chrome
+            console.log(e.wheelDelta)
+        } else if (e.detail) {//Firefox
+            console.log(e.detail)
+        }
+        console.log(e)
+    },*/
     onScroll: function (target, wrap) {
         var scrollTop = target.scrollTop,
             targetPT = parseInt(target.style.paddingTop),
@@ -496,7 +513,17 @@ var ReactRespond = React.createClass({
         };
         __PM__.onscroll = function () {
             _this.onScroll(this, wrap)
+        };/*
+        //window.onmousewheel = document.onmousewheel = _this._onScroll
+        console.log('document.body.onmousewheel', document.body.onmousewheel,document.body)
+        console.log('document.body.onmousewheel', document.body.DOMMouseScroll)
+        window.onmousewheel = function (event) {
+            event = event || window.event;
+            _this._onScroll(event)
         };
+        document.body.addEventListener("DOMMouseScroll", function (event) {
+            _this._onScroll(event)
+        });*/
         this.onLoaded();
     },
     render: function () {
@@ -537,9 +564,9 @@ var ReactRespond = React.createClass({
                 }
             })(),
             mainStyle = {
-                overflow: 'auto',
+                overflow: 'hidden',
                 overflowX: 'hidden',
-                overflowY: 'auto',
+                overflowY: 'scroll',
                 position: 'relative',
                 backgroundColor: '#fff'
             },
@@ -579,8 +606,8 @@ ReactRespond._ = {
         var _p = parseInt(padding);
         if (type == 'x') {
             var oldW = parseInt(target.style.width),
-                newW = (oldW - _p) + 'px';
-            target.style.width = newW
+                nextW = (oldW - _p) + 'px';
+            target.style.width = nextW
         } else if (type == 'y') {
             var windowH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
                 targetHeight = (windowH - _p) + 'px';
@@ -946,7 +973,27 @@ var _assign = function () {
     }
     return _finalObj
 };
+var _dataset = function (ctx, dataName) {
+    if (dataName) {
+        return ctx.getAttribute('data-' + dataName)
+    } else {
+        var __data__ = {
+            length: 0
+        };
+        for (var a = 0; a < ctx.attributes.length; a++) {
+            var _t = ctx.attributes[a],
+                reg = /^data\-/;
+            if (reg.test(ctx.attributes[a].nodeName)) {
+                __data__.length++;
+                __data__[_t.name.replace(reg, '')] = _t.value
+            }
+        }
+        return __data__
+    }
+};
 ReactRespond.RRCell = RRCell;
 ReactRespond.RRFix = RRFix;
 ReactRespond.SwitchBtn = SwitchBtn;
+ReactRespond.dataset = _dataset;
+ReactRespond.assign = _assign;
 module.exports = ReactRespond;
