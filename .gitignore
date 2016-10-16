@@ -7,4 +7,5 @@
 .idea/workspace.xml
 node_modules/
 .idea
-src/react-place.js
+src/react-respond.js
+npm-debug.log
