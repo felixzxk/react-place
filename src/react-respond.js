@@ -1,4 +1,36 @@
 var React = require('react');
+var _assign = function () {
+    var args = arguments;
+    var _finalObj = {};
+    for (var i = 0; i < args.length; i++) {
+        if (!!args[i] && typeof args[i] === 'object') {
+            for (var o in args[i]) {
+                if (args[i].hasOwnProperty(o)) {
+                    _finalObj[o] = args[i][o]
+                }
+            }
+        }
+    }
+    return _finalObj
+};
+var _dataset = function (ctx, dataName) {
+    if (dataName) {
+        return ctx.getAttribute('data-' + dataName)
+    } else {
+        var __data__ = {
+            length: 0
+        };
+        for (var a = 0; a < ctx.attributes.length; a++) {
+            var _t = ctx.attributes[a],
+                reg = /^data-/;
+            if (reg.test(ctx.attributes[a].nodeName)) {
+                __data__.length++;
+                __data__[_t.name.replace(reg, '')] = _t.value
+            }
+        }
+        return __data__
+    }
+};
 var RRCell = React.createClass({
     getInitialState: function () {
         return {
@@ -305,29 +337,24 @@ var ReactRespond = React.createClass({
                 } else {
                     node.style.display = fixProps[pos].visible ? '' : 'none';
                 }
-                if (i == 1 || i == 3) {
-                    var leftDistance = 0;
-                    switch (i) {
-                        case 1:
-                            var rightSwitchBtn = document.getElementById('rightSwitchBtn'),
-                                btnWidth = rightSwitchBtn && rightSwitchBtn.offsetWidth;
-                            leftDistance = wrap.offsetLeft + wrap.offsetWidth;
-                            if (rightSwitchBtn) {
-                                rightSwitchBtn.style.left = (leftDistance - btnWidth) + 'px';
-                                rightSwitchBtn.style.top = _topD(rightSwitchBtn)
-                            }
-                            fixes[1].style.left = (wrap.offsetLeft + wrap.offsetWidth - fixes[1].offsetWidth) + 'px';
-                            break;
-                        case 3:
-                            var leftSwitchBtn = document.getElementById('leftSwitchBtn');
-                            leftDistance = wrap.offsetLeft;
-                            if (leftSwitchBtn) {
-                                leftSwitchBtn.style.left = leftDistance + 'px';
-                                leftSwitchBtn.style.top = _topD(leftSwitchBtn)
-                            }
-                            fixes[3].style.left = wrap.offsetLeft + 'px';
-                            break;
+                var leftDistance = 0;
+                if (i === 1) {
+                    var rightSwitchBtn = document.getElementById('rightSwitchBtn'),
+                        btnWidth = rightSwitchBtn && rightSwitchBtn.offsetWidth;
+                    leftDistance = wrap.offsetLeft + wrap.offsetWidth;
+                    if (rightSwitchBtn) {
+                        rightSwitchBtn.style.left = (leftDistance - btnWidth) + 'px';
+                        rightSwitchBtn.style.top = _topD(rightSwitchBtn)
                     }
+                    fixes[1].style.left = (wrap.offsetLeft + wrap.offsetWidth - fixes[1].offsetWidth) + 'px';
+                } else if (i === 3) {
+                    var leftSwitchBtn = document.getElementById('leftSwitchBtn');
+                    leftDistance = wrap.offsetLeft;
+                    if (leftSwitchBtn) {
+                        leftSwitchBtn.style.left = leftDistance + 'px';
+                        leftSwitchBtn.style.top = _topD(leftSwitchBtn)
+                    }
+                    fixes[3].style.left = wrap.offsetLeft + 'px';
                 }
             },
             _topD = function (btn) {
@@ -480,26 +507,26 @@ var ReactRespond = React.createClass({
             wrapH = parseInt(wrap.offsetHeight),
             scrollBottom = wrapH - targetH + targetPT + targetPB;
         if (scrollTop == 0) {
-            if (typeof this.props.onScrollTop == 'function') this.props.onScrollTop(scrollTop)
+            if (typeof this.props.onScrollTop === 'function') this.props.onScrollTop(scrollTop)
         } else if (scrollTop >= scrollBottom) {
-            if (typeof this.props.onScrollBottom == 'function') this.props.onScrollBottom(scrollTop)
+            if (typeof this.props.onScrollBottom === 'function') this.props.onScrollBottom(scrollTop)
         } else {
             if (scrollTop > ReactRespond._var._scrollTop) {
-                if (typeof this.props.onScrollDown == 'function') this.props.onScrollDown(scrollTop)
+                if (typeof this.props.onScrollDown === 'function') this.props.onScrollDown(scrollTop)
             } else {
-                if (typeof this.props.onScrollUp == 'function') this.props.onScrollUp(scrollTop)
+                if (typeof this.props.onScrollUp === 'function') this.props.onScrollUp(scrollTop)
             }
-            if (typeof this.props.onScroll == 'function') this.props.onScroll(scrollTop)
+            if (typeof this.props.onScroll === 'function') this.props.onScroll(scrollTop)
         }
         ReactRespond._var._scrollTop = scrollTop;
     },
     onLoading: function () {
-        if (typeof this.props.onLoading == 'function') {
+        if (typeof this.props.onLoading === 'function') {
             this.props.onLoading()
         }
     },
     onLoaded: function () {
-        if (typeof this.props.onLoaded == 'function') {
+        if (typeof this.props.onLoaded === 'function') {
             this.props.onLoaded()
         }
     },
@@ -541,7 +568,7 @@ var ReactRespond = React.createClass({
             hideSideBar = ReactRespond._.respond[type].hideSideBar;
         this.triggerSideBar(hideSideBar, fixProps, 'left');
         this.triggerSideBar(hideSideBar, fixProps, 'right');
-        if (typeof this.props.onRespond == 'function') {
+        if (typeof this.props.onRespond === 'function') {
             this.props.onRespond(type, potion, sameSize)
         }
     },
@@ -836,7 +863,7 @@ ReactRespond._ = {
                 }
             }
         }
-        if (typeof cb == 'function') {
+        if (typeof cb === 'function') {
             cb(clone)
         }
         return clone
@@ -943,22 +970,22 @@ var SwitchBtn = React.createClass({
         }
     },
     willOpen: function (type) {
-        if (typeof this.props.willOpen == 'function') {
+        if (typeof this.props.willOpen === 'function') {
             this.props.willOpen(type)
         }
     },
     opened: function (type) {
-        if (typeof this.props.opened == 'function') {
+        if (typeof this.props.opened === 'function') {
             this.props.opened(type)
         }
     },
     willClose: function (type) {
-        if (typeof this.props.willClose == 'function') {
+        if (typeof this.props.willClose === 'function') {
             this.props.willClose(type)
         }
     },
     closed: function (type) {
-        if (typeof this.props.closed == 'function') {
+        if (typeof this.props.closed === 'function') {
             this.props.closed(type)
         }
     },
@@ -1063,38 +1090,7 @@ SwitchBtn.style = {
     }
 };
 SwitchBtn.defaultIdIndex = 0;
-var _assign = function () {
-    var args = arguments;
-    var _finalObj = {};
-    for (var i = 0; i < args.length; i++) {
-        if (!!args[i] && typeof args[i] == 'object') {
-            for (var o in args[i]) {
-                if (args[i].hasOwnProperty(o)) {
-                    _finalObj[o] = args[i][o]
-                }
-            }
-        }
-    }
-    return _finalObj
-};
-var _dataset = function (ctx, dataName) {
-    if (dataName) {
-        return ctx.getAttribute('data-' + dataName)
-    } else {
-        var __data__ = {
-            length: 0
-        };
-        for (var a = 0; a < ctx.attributes.length; a++) {
-            var _t = ctx.attributes[a],
-                reg = /^data-/;
-            if (reg.test(ctx.attributes[a].nodeName)) {
-                __data__.length++;
-                __data__[_t.name.replace(reg, '')] = _t.value
-            }
-        }
-        return __data__
-    }
-};
+
 ReactRespond.RRCell = RRCell;
 ReactRespond.RRFix = RRFix;
 ReactRespond.SwitchBtn = SwitchBtn;
@@ -1102,5 +1098,5 @@ ReactRespond.dataset = _dataset;
 ReactRespond.assign = _assign;
 module.exports = ReactRespond;
 /*
-* 1.0.2
-* */
+ * 1.0.2
+ * */

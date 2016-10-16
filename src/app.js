@@ -48,10 +48,13 @@ class MainApp extends React.Component {
     }
 
     render() {
-        const ds = {
-                textAlign: 'center',
-                lineHeight: '100px',
-                height: '120px'
+
+        const ds = ()=>{
+                return {
+                    textAlign: 'center',
+                    lineHeight: '100px',
+                    height: parseInt(1000 * Math.random()) + 'px'
+                }
             },
             respond = {
                 lg: {
@@ -69,46 +72,48 @@ class MainApp extends React.Component {
                 onLoading = {this.onLoading.bind(this)}
                 onLoaded = {this.onLoaded.bind(this)}
                 onRespond = {this.onRespond.bind(this)}
+                sameHeight = {300}
+                sameSize = {4}
             >
                 <RRCell
                     size = {6}
                 >
-                    <div style = {ds}>size:6</div>
+                    <div style = {ds()}>size:6</div>
                 </RRCell>
                 <RRCell
                     size = {6}
                 >
-                    <div style = {ds}>size:6</div>
+                    <div style = {ds()}>size:6</div>
                 </RRCell>
                 <RRCell
                     size = {8}
                 >
-                    <div style = {ds}>size:8</div>
+                    <div style = {ds()}>size:8</div>
                 </RRCell>
                 <RRCell
                     size = {3}
                 >
-                    <div style = {ds}>size:3</div>
+                    <div style = {ds()}>size:3</div>
                 </RRCell>
                 <RRCell
                     size = {10}
                 >
-                    <div style = {ds}>size:10</div>
+                    <div style = {ds()}>size:10</div>
                 </RRCell>
                 <RRCell
                     size = {3}
                 >
-                    <div style = {ds}>size:3</div>
+                    <div style = {ds()}>size:3</div>
                 </RRCell>
                 <RRCell
                     size = {3}
                 >
-                    <div style = {ds}>size:3</div>
+                    <div style = {ds()}>size:3</div>
                 </RRCell>
                 <RRCell
                     size = {3}
                 >
-                    <div style = {ds}>size:3</div>
+                    <div style = {ds()}>size:3</div>
                 </RRCell>
                 <RRFix
                     type = "Bottom"
@@ -130,7 +135,7 @@ class MainApp extends React.Component {
                     title = 'left'
                 >
                     <div
-                        style = {ds}
+                        style = {ds()}
                     >
                         这里是左侧边栏
                     </div>
@@ -144,7 +149,7 @@ class MainApp extends React.Component {
                     title = '这里是右侧边栏'
                 >
                     <div
-                        style = {ds}
+                        style = {ds()}
                     >
                         这里是右侧边栏
                     </div>
