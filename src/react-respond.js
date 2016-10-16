@@ -25,7 +25,7 @@ var RRCell = React.createClass({
         cellContStyle.width = '100%';
         return (
             <div
-                className = 'PMCell'
+                className = 'RRCell'
                 style = {cellWrapStyle}
                 data-size = {this.state.size}
                 size = {this.state.size}
@@ -91,10 +91,10 @@ var RRFix = React.createClass({
                         return 'Top'
                 }
             })(this.state.type),
-            id = 'PMFix' + type,
-            id2 = '_PMFix' + type,
-            id3 = '__PMFix' + type,
-            className = 'PMFix' + type + ' PMFixes',
+            id = 'RRFix' + type,
+            id2 = '_RRFix' + type,
+            id3 = '__RRFix' + type,
+            className = 'RRFix' + type + ' RRFixes',
             isShow = this.state.defaultVisible ? 'block' : 'none',
             style = this.state.style || {},
             wrapStyle0 = {
@@ -140,7 +140,7 @@ var ReactRespond = React.createClass({
     getInitialState: function () {
         var respond = ReactRespond._.getRespond(ReactRespond._.respond, this.props.respond);
         return {
-            id: this.props.id || '__PM__',
+            id: this.props.id || '__RR__',
             margin: this.props.margin || 0,
             potion: this.props.potion || 12,
             sameHeight: this.props.sameHeight || 'auto',
@@ -167,17 +167,29 @@ var ReactRespond = React.createClass({
             this.needSetting();
         })
     },
-    setCell: function () {
+    setCell: function (reTry, respond) {
         var cellsWrap = document.getElementById('cells'),
             cells = cellsWrap.childNodes,
             fixes = document.getElementById('fixes'),
             wrapW = Math.round(fixes.offsetWidth),
-            potion = this.state.potion,
+            potion = respond.potion || this.state.potion,
+            sameSize = this.state.sameSize,
             margin = this.state.margin,
             height = typeof this.state.sameHeight !== 'number' ? this.state.sameHeight : this.state.sameHeight + 'px',
             cellUnit = Math.floor((wrapW - ((potion + 1) * margin)) / potion),
             setCellWidth = function (size) {
                 return (cellUnit * size) + (margin * (size - 1)) + 'px'
+            },
+            setSize = function (_size) {
+                var _size_;
+                if (respond.unifySize > 0) {
+                    _size_ = respond.unifySize
+                } else if (sameSize > 0) {
+                    _size_ = sameSize
+                } else {
+                    _size_ = _size
+                }
+                return _size_
             };
         var count = 0,
             needClear = [],
@@ -194,8 +206,8 @@ var ReactRespond = React.createClass({
             })
         }
         for (var i = 0; i < cells.length; i++) {
-            var _size = parseInt(_dataset(cells[i], 'size'));
-            var size = this.state.sameSize == 0 ? _size : this.state.sameSize;
+            var _size = parseInt(_dataset(cells[i], 'size')),
+                size = setSize(_size);
             if (size > potion) size = potion;
             if (cells[i].className != '_clear_') {
                 cells[i].style.width = setCellWidth(size);
@@ -220,35 +232,105 @@ var ReactRespond = React.createClass({
                 ReactRespond._.insertClear(cellsWrap, (o + i))
             })
         }
+        /**
+         * reTry == 0 需要检验cells容器的高度，是否已经超过了wrap的高度
+         * true return 1；需要重新重置整体宽度，因为出现了滚动条
+         * false return 2
+         */
+        var hasScroll = ReactRespond._var.hasScroll,
+            _hasScroll = 0;
+        if (reTry == 0) {
+            var cellsWrapH = cellsWrap.offsetHeight - parseInt(document.getElementById('__RR__').style.height);
+            if (cellsWrapH > 0) {
+                ReactRespond._var.hasScroll = _hasScroll = 1;
+            } else {
+                ReactRespond._var.hasScroll = _hasScroll = 0;
+            }
+            if (hasScroll == _hasScroll) {
+                return 2
+            } else {
+                return 1
+            }
+        } else if (reTry == 1) {
+            return 2
+        }
+
     },
-    setFixedCells: function (self, wrap, curSize) {
-        var node = ReactRespond._.getFixes(),
-            selfH = self.offsetHeight,
-            curW = this.state.respond[curSize].width,
-            curHideSide = this.state.respond[curSize].hideSideBar,
-            margin = this.state.margin,
-            PM_WIDTH = document.getElementById('__PM_Width_'),
-            _wrapW = Math.round(PM_WIDTH.offsetWidth),
-            wrapW = curW < 1 && curW !== 0 ? Math.round(_wrapW * curW) : 'auto',
-            marginLeft = wrapW !== 'auto' ? Math.round((_wrapW - wrapW) / 2) : 0,
-            _wrapWidth = wrapW == 'auto' ? wrapW : wrapW,
-            wrapWidth = _wrapWidth !== 'auto' ? _wrapWidth + 'px' : 'auto';
-        wrap.style.width = wrapWidth;
-        console.log('wrapWidth', wrapWidth)
-        var fixProps = this.state.fixProps;
-        var pds = (function () {
-            if (fixProps == undefined) {
-                fixProps = {
+    setFixedCells: function (fixes, wrap) {
+        var RRWidth = document.getElementById('__RR_Width__').offsetWidth,
+            heightWrap = document.getElementById('__RR__').style.height,
+            setSide = (function (top) {
+                var sideProps = {};
+                if (top) {
+                    sideProps.top = top.offsetHeight + 'px'
+                } else {
+                    sideProps.top = '0'
+                }
+                sideProps.height = heightWrap;
+                return sideProps
+            })(fixes[0]),
+            fixProps = this.state.fixProps || {
                     count: 0,
                     ready: false
+                },
+            setFixProps = function (i) {
+                var pos = (function (i) {
+                        switch (i) {
+                            case 0:
+                                return 'top';
+                            case 1:
+                                return 'right';
+                            case 2:
+                                return 'bottom';
+                            case 3:
+                                return 'left';
+                            default:
+                                return 'top';
+                        }
+                    })(i),
+                    node = fixes[i],
+                    _defaultVisible = _dataset(node, 'defaultVisible'),
+                    defaultVisible = _defaultVisible !== false,
+                    title = node.title,
+                    type = _dataset(node, 'type');
+                if (!fixProps[pos]) {
+                    fixProps[pos] = {
+                        visible: defaultVisible,
+                        pin: false,
+                        title: title
+                    };
+                    fixProps.count += 1;
+                    node.style.display = defaultVisible ? '' : 'none';
+                } else {
+                    node.style.display = fixProps[pos].visible ? '' : 'none';
                 }
-            } else {
-                fixProps.ready = true
-            }
-            var _top = node[0] && (node[0].offsetHeight + 'px') || 0;
-
-            function _topD(btn) {
-                var _top_ = document.getElementById('_PMFixTop'),
+                if (i == 1 || i == 3) {
+                    var leftDistance = 0;
+                    switch (i) {
+                        case 1:
+                            var rightSwitchBtn = document.getElementById('rightSwitchBtn'),
+                                btnWidth = rightSwitchBtn && rightSwitchBtn.offsetWidth;
+                            leftDistance = wrap.offsetLeft + wrap.offsetWidth;
+                            if (rightSwitchBtn) {
+                                rightSwitchBtn.style.left = (leftDistance - btnWidth) + 'px';
+                                rightSwitchBtn.style.top = _topD(rightSwitchBtn)
+                            }
+                            fixes[1].style.left = (wrap.offsetLeft + wrap.offsetWidth - fixes[1].offsetWidth) + 'px';
+                            break;
+                        case 3:
+                            var leftSwitchBtn = document.getElementById('leftSwitchBtn');
+                            leftDistance = wrap.offsetLeft;
+                            if (leftSwitchBtn) {
+                                leftSwitchBtn.style.left = leftDistance + 'px';
+                                leftSwitchBtn.style.top = _topD(leftSwitchBtn)
+                            }
+                            fixes[3].style.left = wrap.offsetLeft + 'px';
+                            break;
+                    }
+                }
+            },
+            _topD = function (btn) {
+                var _top_ = document.getElementById('_RRFixTop'),
                     topD = '10px';
                 if (_top_) {
                     var _topH = _top_.offsetHeight,
@@ -258,124 +340,47 @@ var ReactRespond = React.createClass({
                     topD += 'px'
                 }
                 return topD
-            }
-
-            return node.map(function (n, i) {
-                if (n) {
-                    var _defaultVisible = _dataset(n, 'defaultVisible');
-                    var defaultVisible = _defaultVisible !== false,
-                        height = n.offsetHeight,
-                        title = n.title;
-                    switch (i) {
-                        case 0:
-                            var topWrap = document.getElementById('_PMFixTop');
-                            topWrap.style.width = wrapWidth;
-                            n.style.left = 0;
-                            n.style.top = 0;
-                            n.style.width = _wrapW + 'px';
-                            if (!fixProps.top) {
-                                fixProps.top = {
-                                    visible: defaultVisible,
-                                    pin: false,
-                                    title: title
-                                };
-                                fixProps.count += 1;
-                                n.style.display = defaultVisible ? '' : 'none';
-                            } else {
-                                n.style.display = fixProps.top.visible;
-                            }
-                            return height + 'px';
-                        case 2:
-                            var bottomWrap = document.getElementById('_PMFixBottom');
-                            bottomWrap.style.width = wrapWidth;
-                            n.style.left = 0;
-                            n.style.bottom = 0;
-                            n.style.width = _wrapW + 'px';
-                            if (!fixProps.bottom) {
-                                fixProps.bottom = {
-                                    visible: defaultVisible,
-                                    pin: false,
-                                    title: title
-                                };
-                                fixProps.count += 1;
-                                n.style.display = defaultVisible ? '' : 'none';
-                            } else {
-                                n.style.display = fixProps.bottom.visible
-                            }
-                            return height + 'px';
-                        case 1:
-                            var rightSwitchBtn = document.getElementById('rightSwitchBtn'),
-                                scrollWidth = document.getElementById('__PM__').offsetWidth - _wrapW;
-                            if (rightSwitchBtn) {
-                                if (_wrapWidth !== 'auto') {
-                                    rightSwitchBtn.style.right = (marginLeft + scrollWidth) + 'px'
-                                } else {
-                                    rightSwitchBtn.style.right = scrollWidth + 'px'
-                                }
-                                rightSwitchBtn.style.top = _topD(rightSwitchBtn)
-                            }
-                            n.style.right = _wrapWidth !== 'auto' ? (marginLeft + scrollWidth) + 'px' : scrollWidth + 'px';
-                            n.style.top = _top;
-                            if (!fixProps.right) {
-                                fixProps.right = {
-                                    visible: defaultVisible,
-                                    pin: curHideSide,
-                                    title: title
-                                };
-                                fixProps.count += 1;
-                                n.style.display = defaultVisible ? '' : 'none';
-                            } else {
-                                n.style.display = fixProps.right.visible ? '' : 'none';
-                            }
-                            return fixProps.right.pin ? 0 : n.offsetWidth + 'px';
-                        case 3:
-                            var leftSwitchBtn = document.getElementById('leftSwitchBtn');
-                            if (leftSwitchBtn) {
-                                leftSwitchBtn.style.left = marginLeft + 'px';
-                                leftSwitchBtn.style.top = _topD(leftSwitchBtn)
-                            }
-                            n.style.left = marginLeft + 'px';
-                            n.style.top = _top;
-                            if (!fixProps.left) {
-                                fixProps.left = {
-                                    visible: defaultVisible,
-                                    pin: curHideSide,
-                                    title: title
-                                };
-                                fixProps.count += 1;
-                                n.style.display = defaultVisible ? '' : 'none';
-                            } else {
-                                n.style.display = fixProps.left.visible ? '' : 'none';
-                            }
-                            return fixProps.left.pin ? 0 : n.offsetWidth + 'px';
-                        default :
-                            return 0
-                    }
-                } else {
-                    return 0
+            };
+        for (var fix = 0; fix < fixes.length; fix++) {
+            var _f = fixes[fix];
+            if (_f) {
+                switch (fix) {
+                    case 0:
+                        _f.style.top = 0;
+                        _f.style.left = 0;
+                        _f.style.width = RRWidth + 'px';
+                        setFixProps(0);
+                        break;
+                    case 2://底部
+                        _f.style.bottom = 0;
+                        _f.style.left = 0;
+                        _f.style.width = RRWidth + 'px';
+                        setFixProps(2);
+                        break;
+                    case 1://右边
+                        _f.style.height = setSide.height;
+                        _f.style.top = setSide.top;
+                        setFixProps(1);
+                        break;
+                    case 3://左边
+                        _f.style.height = setSide.height;
+                        _f.style.top = setSide.top;
+                        setFixProps(3);
+                        break;
                 }
-            });
-        })();
+            }
+        }
+
         if (!fixProps.ready) {
+            fixProps.ready = true;
             this.setState({
                 fixProps: fixProps
             });
         }
-        var targetY = [self];
-        if (node[1]) {
-            targetY.push(node[1])
-        }
-        if (node[3]) {
-            targetY.push(node[3])
-        }
-        ReactRespond._.setSize(targetY, (parseInt(pds[0]) + parseInt(pds[2]) ), 'y');
-        ReactRespond._.setSize(wrap, (parseInt(pds[1]) + parseInt(pds[3]) ), 'x');
-        wrap.style.padding = '0 ' + pds[1] + ' ' + margin + 'px ' + pds[3];
-        self.style.padding = pds[0] + ' 0 ' + pds[2];
     },
     needSetting: function () {
         var self = document.getElementById(this.state.id),
-            wrap = document.getElementById('__PM_WRAP__'),
+            wrap = document.getElementById('__RR_WRAP__'),
             parent = self && self.parentNode || false,
             res = this.state.respond,
             potion = this.props.potion || 12,
@@ -391,23 +396,81 @@ var ReactRespond = React.createClass({
                 this.onRespond(_w, this.state.potion, this.state.sameSize)
             })
         }
-        var _pm_ = document.getElementById('__PM__');
-        this.setFixedCells(self, wrap, _w || curSize);
-        this.setCell(self, wrap, _w || curSize)
-    },/*
-    _onScroll: function (e) {
+        var fixes = ReactRespond._.getFixes();
+        var elm = {
+            self: self,
+            fixes: fixes,
+            wrap: wrap,
+            curSize: _w || curSize,
+            fixProps: this.state.fixProps || false
+        };
 
-        e = e || window.event;
-        var target = e.target;
+        this.setting(elm);
+        //this.setFixedCells(self, wrap, _w || curSize);
+        //this.setCell(self, wrap, _w || curSize)
+    },
+    setting: function (elm) {
+        var _this = this,
+            reTry = 0,              //0：需要判断；1：需要reTry；2：不需要reTry
+            self = elm.self,
+            wrap = elm.wrap,
+            respond = ReactRespond._.respond[elm.curSize],
+            fixProps = elm.fixProps,
+            fixes = elm.fixes,
+            fixTop = fixes[0] || false,
+            fixRight = fixes[1] || false,
+            fixBottom = fixes[2] || false,
+            fixLeft = fixes[3] || false;
 
-        console.log(target.className == 'PMCell')
-        if (e.wheelDelta) {//IE/Opera/Chrome
-            console.log(e.wheelDelta)
-        } else if (e.detail) {//Firefox
-            console.log(e.detail)
+        function setter() {
+            function getSize(t) {
+                var _size = {
+                    h: 0,
+                    w: 0
+                };
+                if (t) {
+                    var sh = t.style.height,
+                        sw = t.style.width;
+                    if (sh == 'auto') {
+                        _size.h = t.offsetHeight
+                    } else {
+                        _size.h = parseInt(sh)
+                    }
+                    if (sw == 'auto') {
+                        _size.w = t.offsetWidth
+                    } else {
+                        _size.w = parseInt(sw)
+                    }
+                }
+                return _size
+            }
+
+            ReactRespond._.setY(
+                self,
+                getSize(fixTop).h,
+                getSize(fixBottom).h,
+                true
+            );
+            ReactRespond._.setX(
+                wrap,
+                getSize(fixLeft).w,
+                getSize(fixRight).w,
+                respond,
+                fixProps
+            );
+            reTry = _this.setCell(reTry, respond);
+            if (reTry == 1) {
+                return '需要重置'
+            }
+            _this.setFixedCells(fixes, wrap, respond);
         }
-        console.log(e)
-    },*/
+
+        for (var re = 0; re < 2; re++) {
+            if (reTry !== 2) {
+                setter()
+            }
+        }
+    },
     onScroll: function (target, wrap) {
         var scrollTop = target.scrollTop,
             targetPT = parseInt(target.style.paddingTop),
@@ -451,7 +514,7 @@ var ReactRespond = React.createClass({
         if (!type) {
             return
         }
-        var targetId = 'PMFix' + type.substring(0, 1).toUpperCase() + type.substring(1),
+        var targetId = 'RRFix' + type.substring(0, 1).toUpperCase() + type.substring(1),
             hasThis = document.getElementById(targetId);
         if (!!hasThis) {
             var curSize = this.state.curSize,
@@ -488,13 +551,13 @@ var ReactRespond = React.createClass({
         body.width = '100%';
         body.overflow = 'hidden';
         var _this = this,
-            wrap = document.getElementById('__PM_WRAP__'),
+            wrap = document.getElementById('__RR_WRAP__'),
             children = wrap.children,
-            __PM__ = document.getElementById(this.state.id),
+            __RR__ = document.getElementById(this.state.id),
             cellsWrap = document.getElementById('cells'),
             fixesWrap = document.getElementById('fixes'),
-            regFix = /PMFix/,
-            regCell = /PMCell/;
+            regFix = /RRFix/,
+            regCell = /RRCell/;
         //需要先将不同类型的子元素放入相应的元素类型的容器里
         while (children[2]) {
             var className = children[2].className;
@@ -503,27 +566,17 @@ var ReactRespond = React.createClass({
             } else if (regFix.test(className)) {
                 fixesWrap.appendChild(children[2]);
             } else {
-                document.getElementById('__PM_WRAP__').removeChild(children[2]);
-                console.error('ReactRespond组件中只能包含PMCell或者PMFix子组件，或者以‘_’或大写字母开头的变量名引用组件，其余的元素都会被删除');
+                document.getElementById('__RR_WRAP__').removeChild(children[2]);
+                console.error('ReactRespond组件中只能包含RRCell或者RRFix子组件，或者以‘_’或大写字母开头的变量名引用组件，其余的元素都会被删除');
             }
         }
-        this.needSetting();
+        _this.needSetting();
         window.onresize = function () {
             _this.needSetting()
         };
-        __PM__.onscroll = function () {
+        __RR__.onscroll = function () {
             _this.onScroll(this, wrap)
-        };/*
-        //window.onmousewheel = document.onmousewheel = _this._onScroll
-        console.log('document.body.onmousewheel', document.body.onmousewheel,document.body)
-        console.log('document.body.onmousewheel', document.body.DOMMouseScroll)
-        window.onmousewheel = function (event) {
-            event = event || window.event;
-            _this._onScroll(event)
         };
-        document.body.addEventListener("DOMMouseScroll", function (event) {
-            _this._onScroll(event)
-        });*/
         this.onLoaded();
     },
     render: function () {
@@ -566,7 +619,7 @@ var ReactRespond = React.createClass({
             mainStyle = {
                 overflow: 'hidden',
                 overflowX: 'hidden',
-                overflowY: 'scroll',
+                overflowY: 'auto',
                 position: 'relative',
                 backgroundColor: '#fff'
             },
@@ -581,12 +634,12 @@ var ReactRespond = React.createClass({
         return (
             <div
                 id = {this.state.id}
-                className = {`__PM__ ${this.state.curSize}`}
+                className = {`__RR__ ${this.state.curSize}`}
                 style = {mainStyle}
             >
                 {sideBarController}
                 <div
-                    id = "__PM_WRAP__"
+                    id = "__RR_WRAP__"
                     style = {wrapStyle}
                 >
                     <div
@@ -596,24 +649,73 @@ var ReactRespond = React.createClass({
                     <div id = "fixes"></div>
                     {this.props.children}
                 </div>
-                <div id = "__PM_Width_" title = "用来侦测可用宽度常量"></div>
+                <div id = "__RR_Width__" title = "用来侦测可用宽度常量"></div>
             </div>
         )
     }
 });
 ReactRespond._ = {
-    setSize: function (target, padding, type) {
-        var _p = parseInt(padding);
-        if (type == 'x') {
-            var oldW = parseInt(target.style.width),
-                nextW = (oldW - _p) + 'px';
-            target.style.width = nextW
-        } else if (type == 'y') {
-            var windowH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
-                targetHeight = (windowH - _p) + 'px';
-            target.forEach(function (t) {
-                t.style.height = targetHeight
-            })
+    setY: function (t, pT, pB, win) {
+        var realH = 0,
+            p = t.parentNode,
+            _h = win && window.innerHeight || p && p.offsetHeight || t.nodeType && t.offsetHeight,
+            _pT = pT && parseInt(pT) || 0,
+            _pB = pB && parseInt(pB) || 0;
+        if (t.nodeType) {
+            realH = _h - _pT - _pB;
+            if (realH > 0) {
+                t.style.height = realH + 'px';
+            } else {
+                t.style.height = 'auto';
+            }
+            t.style.paddingTop = _pT + 'px';
+            t.style.paddingBottom = _pB + 'px';
+        }
+    },
+    setX: function (t, pL, pR, respond, fixProps) {
+        var realW = 0,
+            hideSideBar = respond.hideSideBar,
+            resW = respond.width,
+            _curSize = (resW < 1 && resW > 0) ? resW : 1,
+            p = document.getElementById('__RR_Width__'),
+            _w = p.offsetWidth * _curSize || t.offsetWidth * _curSize,
+            paddingX = (function () {
+                var _padding = {
+                    left: 0,
+                    right: 0
+                };
+                if (pL) {
+                    if (fixProps && fixProps['left'] && !fixProps['left'].pin && fixProps['left'].visible) {
+
+                        _padding.left = pL;
+                    } else {
+                        _padding.left = 0;
+                    }
+                }
+                if (pR) {
+                    if (fixProps && fixProps['right'] && !fixProps['right'].pin && fixProps['right'].visible) {
+                        _padding.right = pR;
+                    } else {
+                        _padding.right = 0;
+                    }
+                }
+                return _padding
+            })();
+        if (t.nodeType) {
+            if (!hideSideBar) {
+                t.style.paddingLeft = paddingX.left + 'px';
+                t.style.paddingRight = paddingX.right + 'px';
+                realW = _w - paddingX.left - paddingX.right;
+            } else {
+                t.style.paddingLeft = '0';
+                t.style.paddingRight = '0';
+                realW = _w;
+            }
+            if (realW > 0) {
+                t.style.width = realW + 'px';
+            } else {
+                t.style.width = 'auto';
+            }
         }
     },
     operateSize: function (parent, curSize, res) {
@@ -656,10 +758,10 @@ ReactRespond._ = {
      * @returns {Array}，[nodeTop, nodeRight, nodeBottom, nodeLeft]，返回获取到的dom节点，如果该位置没有节点则返回 undefined
      **/
     getFixes: function (which) {
-        var top = document.getElementsByClassName('PMFixTop'),
-            right = document.getElementsByClassName('PMFixRight'),
-            bottom = document.getElementsByClassName('PMFixBottom'),
-            left = document.getElementsByClassName('PMFixLeft');
+        var top = document.getElementsByClassName('RRFixTop'),
+            right = document.getElementsByClassName('RRFixRight'),
+            bottom = document.getElementsByClassName('RRFixBottom'),
+            left = document.getElementsByClassName('RRFixLeft');
         if (top && top.length > 1) {
             console.error('fixes的元素同一方向只允许存在一个，top方向有多个fixes元素存在')
         }
@@ -770,7 +872,8 @@ ReactRespond._ = {
     }
 };
 ReactRespond._var = {
-    _scrollTop: 0
+    _scrollTop: 0,
+    hasScroll: 0
 };
 var SwitchBtn = React.createClass({
     getInitialState: function () {
@@ -982,7 +1085,7 @@ var _dataset = function (ctx, dataName) {
         };
         for (var a = 0; a < ctx.attributes.length; a++) {
             var _t = ctx.attributes[a],
-                reg = /^data\-/;
+                reg = /^data-/;
             if (reg.test(ctx.attributes[a].nodeName)) {
                 __data__.length++;
                 __data__[_t.name.replace(reg, '')] = _t.value
