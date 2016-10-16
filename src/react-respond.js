@@ -1101,3 +1101,6 @@ ReactRespond.SwitchBtn = SwitchBtn;
 ReactRespond.dataset = _dataset;
 ReactRespond.assign = _assign;
 module.exports = ReactRespond;
+/*
+* 1.0.2
+* */
