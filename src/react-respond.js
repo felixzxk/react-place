@@ -169,16 +169,27 @@ var ReactRespond = React.createClass({
     },
     setCell: function (reTry, respond) {
         var cellsWrap = document.getElementById('cells'),
-            RRWrap = document.getElementById('__RR_WRAP__'),
             cells = cellsWrap.childNodes,
             fixes = document.getElementById('fixes'),
             wrapW = Math.round(fixes.offsetWidth),
             potion = respond.potion || this.state.potion,
+            sameSize = this.state.sameSize,
             margin = this.state.margin,
             height = typeof this.state.sameHeight !== 'number' ? this.state.sameHeight : this.state.sameHeight + 'px',
             cellUnit = Math.floor((wrapW - ((potion + 1) * margin)) / potion),
             setCellWidth = function (size) {
                 return (cellUnit * size) + (margin * (size - 1)) + 'px'
+            },
+            setSize = function (_size) {
+                var _size_;
+                if (respond.unifySize > 0) {
+                    _size_ = respond.unifySize
+                } else if (sameSize > 0) {
+                    _size_ = sameSize
+                } else {
+                    _size_ = _size
+                }
+                return _size_
             };
         var count = 0,
             needClear = [],
@@ -196,7 +207,7 @@ var ReactRespond = React.createClass({
         }
         for (var i = 0; i < cells.length; i++) {
             var _size = parseInt(_dataset(cells[i], 'size')),
-                size = respond.unifySize == 0 ? _size : respond.unifySize;
+                size = setSize(_size);
             if (size > potion) size = potion;
             if (cells[i].className != '_clear_') {
                 cells[i].style.width = setCellWidth(size);
@@ -232,25 +243,20 @@ var ReactRespond = React.createClass({
             var cellsWrapH = cellsWrap.offsetHeight - parseInt(document.getElementById('__RR__').style.height);
             if (cellsWrapH > 0) {
                 ReactRespond._var.hasScroll = _hasScroll = 1;
-                console.log('高了', cellsWrapH);
             } else {
                 ReactRespond._var.hasScroll = _hasScroll = 0;
-                console.log('不高', cellsWrapH);
             }
             if (hasScroll == _hasScroll) {
-                console.log('没有变化，不需要重置', document.getElementById('__RR_Width__').offsetWidth);
                 return 2
             } else {
-                console.log('有变化，需要重置', document.getElementById('__RR_Width__').offsetWidth);
                 return 1
             }
         } else if (reTry == 1) {
-            console.log('已经重置过了', document.getElementById('__RR_Width__').offsetWidth);
             return 2
         }
 
     },
-    setFixedCells: function (fixes, wrap, respond) {
+    setFixedCells: function (fixes, wrap) {
         var RRWidth = document.getElementById('__RR_Width__').offsetWidth,
             heightWrap = document.getElementById('__RR__').style.height,
             setSide = (function (top) {
@@ -296,7 +302,6 @@ var ReactRespond = React.createClass({
                     fixProps.count += 1;
                     node.style.display = defaultVisible ? '' : 'none';
                 } else {
-                    console.log('fixProps[pos]', fixProps[pos])
                     node.style.display = fixProps[pos].visible ? '' : 'none';
                 }
                 if (i == 1 || i == 3) {
@@ -317,7 +322,7 @@ var ReactRespond = React.createClass({
                             leftDistance = wrap.offsetLeft;
                             if (leftSwitchBtn) {
                                 leftSwitchBtn.style.left = leftDistance + 'px';
-                                leftSwitchBtn.style.top = _topD(leftDistance)
+                                leftSwitchBtn.style.top = _topD(leftSwitchBtn)
                             }
                             fixes[3].style.left = wrap.offsetLeft + 'px';
                             break;
@@ -373,157 +378,6 @@ var ReactRespond = React.createClass({
             });
         }
     },
-    _setFixedCells: function (self, wrap, curSize) {
-        var node = ReactRespond._.getFixes(),
-            selfH = self.offsetHeight,
-            curW = this.state.respond[curSize].width,
-            curHideSide = this.state.respond[curSize].hideSideBar,
-            margin = this.state.margin,
-            PM_WIDTH = document.getElementById('__PM_Width_'),
-            _wrapW = Math.round(PM_WIDTH.offsetWidth),
-            wrapW = curW < 1 && curW !== 0 ? Math.round(_wrapW * curW) : 'auto',
-            marginLeft = wrapW !== 'auto' ? Math.round((_wrapW - wrapW) / 2) : 0,
-            _wrapWidth = wrapW == 'auto' ? wrapW : wrapW,
-            wrapWidth = _wrapWidth !== 'auto' ? _wrapWidth + 'px' : 'auto';
-        wrap.style.width = wrapWidth;
-        var fixProps = this.state.fixProps;
-        var pds = (function () {
-            if (fixProps == undefined) {
-                fixProps = {
-                    count: 0,
-                    ready: false
-                }
-            } else {
-                fixProps.ready = true
-            }
-            var _top = node[0] && (node[0].offsetHeight + 'px') || 0;
-
-            function _topD(btn) {
-                var _top_ = document.getElementById('_RRFixTop'),
-                    topD = '10px';
-                if (_top_) {
-                    var _topH = _top_.offsetHeight,
-                        _btnH = btn.offsetHeight,
-                        _poor = _topH - _btnH;
-                    topD = _poor > 0 ? _poor / 2 : 10;
-                    topD += 'px'
-                }
-                return topD
-            }
-
-            return node.map(function (n, i) {
-                if (n) {
-                    var _defaultVisible = _dataset(n, 'defaultVisible');
-                    var defaultVisible = _defaultVisible !== false,
-                        height = n.offsetHeight,
-                        title = n.title;
-                    switch (i) {
-                        case 0:
-                            var topWrap = document.getElementById('_RRFixTop');
-                            topWrap.style.width = wrapWidth;
-                            n.style.left = 0;
-                            n.style.top = 0;
-                            n.style.width = _wrapW + 'px';
-                            if (!fixProps.top) {
-                                fixProps.top = {
-                                    visible: defaultVisible,
-                                    pin: false,
-                                    title: title
-                                };
-                                fixProps.count += 1;
-                                n.style.display = defaultVisible ? '' : 'none';
-                            } else {
-                                n.style.display = fixProps.top.visible;
-                            }
-                            return height + 'px';
-                        case 2:
-                            var bottomWrap = document.getElementById('_RRFixBottom');
-                            bottomWrap.style.width = wrapWidth;
-                            n.style.left = 0;
-                            n.style.bottom = 0;
-                            n.style.width = _wrapW + 'px';
-                            if (!fixProps.bottom) {
-                                fixProps.bottom = {
-                                    visible: defaultVisible,
-                                    pin: false,
-                                    title: title
-                                };
-                                fixProps.count += 1;
-                                n.style.display = defaultVisible ? '' : 'none';
-                            } else {
-                                n.style.display = fixProps.bottom.visible
-                            }
-                            return height + 'px';
-                        case 1:
-                            var rightSwitchBtn = document.getElementById('rightSwitchBtn'),
-                                scrollWidth = document.getElementById('__RR__').offsetWidth - _wrapW;
-                            if (rightSwitchBtn) {
-                                if (_wrapWidth !== 'auto') {
-                                    rightSwitchBtn.style.right = (marginLeft + scrollWidth) + 'px'
-                                } else {
-                                    rightSwitchBtn.style.right = scrollWidth + 'px'
-                                }
-                                rightSwitchBtn.style.top = _topD(rightSwitchBtn)
-                            }
-                            n.style.right = _wrapWidth !== 'auto' ? (marginLeft + scrollWidth) + 'px' : scrollWidth + 'px';
-                            n.style.top = _top;
-                            if (!fixProps.right) {
-                                fixProps.right = {
-                                    visible: defaultVisible,
-                                    pin: curHideSide,
-                                    title: title
-                                };
-                                fixProps.count += 1;
-                                n.style.display = defaultVisible ? '' : 'none';
-                            } else {
-                                n.style.display = fixProps.right.visible ? '' : 'none';
-                            }
-                            return fixProps.right.pin ? 0 : n.offsetWidth + 'px';
-                        case 3:
-                            var leftSwitchBtn = document.getElementById('leftSwitchBtn');
-                            if (leftSwitchBtn) {
-                                leftSwitchBtn.style.left = marginLeft + 'px';
-                                leftSwitchBtn.style.top = _topD(leftSwitchBtn)
-                            }
-                            n.style.left = marginLeft + 'px';
-                            n.style.top = _top;
-                            if (!fixProps.left) {
-                                fixProps.left = {
-                                    visible: defaultVisible,
-                                    pin: curHideSide,
-                                    title: title
-                                };
-                                fixProps.count += 1;
-                                n.style.display = defaultVisible ? '' : 'none';
-                            } else {
-                                n.style.display = fixProps.left.visible ? '' : 'none';
-                            }
-                            return fixProps.left.pin ? 0 : n.offsetWidth + 'px';
-                        default :
-                            return 0
-                    }
-                } else {
-                    return 0
-                }
-            });
-        })();
-        if (!fixProps.ready) {
-            this.setState({
-                fixProps: fixProps
-            });
-        }
-        var targetY = [self];
-        if (node[1]) {
-            targetY.push(node[1])
-        }
-        if (node[3]) {
-            targetY.push(node[3])
-        }
-        ReactRespond._.setSize(targetY, (parseInt(pds[0]) + parseInt(pds[2]) ), 'y');
-        ReactRespond._.setSize(wrap, (parseInt(pds[1]) + parseInt(pds[3]) ), 'x');
-        wrap.style.padding = '0 ' + pds[1] + ' ' + margin + 'px ' + pds[3];
-        self.style.padding = pds[0] + ' 0 ' + pds[2];
-    },
     needSetting: function () {
         var self = document.getElementById(this.state.id),
             wrap = document.getElementById('__RR_WRAP__'),
@@ -569,7 +423,6 @@ var ReactRespond = React.createClass({
             fixLeft = fixes[3] || false;
 
         function setter() {
-            console.log('fixTop && fixTop.style.height', fixTop && fixTop.style.height, 'ddddd')
             function getSize(t) {
                 var _size = {
                     h: 0,
@@ -590,7 +443,8 @@ var ReactRespond = React.createClass({
                     }
                 }
                 return _size
-            };
+            }
+
             ReactRespond._.setY(
                 self,
                 getSize(fixTop).h,
@@ -825,14 +679,11 @@ ReactRespond._ = {
             _curSize = (resW < 1 && resW > 0) ? resW : 1,
             p = document.getElementById('__RR_Width__'),
             _w = p.offsetWidth * _curSize || t.offsetWidth * _curSize,
-            _pL = pL && parseInt(pL) || 0,
-            _pR = pR && parseInt(pR) || 0,
             paddingX = (function () {
                 var _padding = {
                     left: 0,
                     right: 0
                 };
-                console.log('pL', pL)
                 if (pL) {
                     if (fixProps && fixProps['left'] && !fixProps['left'].pin && fixProps['left'].visible) {
 
@@ -865,20 +716,6 @@ ReactRespond._ = {
             } else {
                 t.style.width = 'auto';
             }
-        }
-    },
-    setSize: function (target, padding, type) {
-        var _p = parseInt(padding);
-        if (type == 'x') {
-            var oldW = parseInt(target.style.width),
-                nextW = (oldW - _p) + 'px';
-            target.style.width = nextW
-        } else if (type == 'y') {
-            var windowH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
-                targetHeight = (windowH - _p) + 'px';
-            target.forEach(function (t) {
-                t.style.height = targetHeight
-            })
         }
     },
     operateSize: function (parent, curSize, res) {
@@ -1248,7 +1085,7 @@ var _dataset = function (ctx, dataName) {
         };
         for (var a = 0; a < ctx.attributes.length; a++) {
             var _t = ctx.attributes[a],
-                reg = /^data\-/;
+                reg = /^data-/;
             if (reg.test(ctx.attributes[a].nodeName)) {
                 __data__.length++;
                 __data__[_t.name.replace(reg, '')] = _t.value

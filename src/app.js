@@ -61,7 +61,7 @@ class MainApp extends React.Component {
         return (
                 <ReactRespond
                     margin = {5}
-                    potion = {12}
+                    potion = {6}
                     respond = {respond}
                     onScrollTop = {this.onScrollTop.bind(this)}
                     onScrollBottom = {this.onScrollBottom.bind(this)}
@@ -69,6 +69,7 @@ class MainApp extends React.Component {
                     onLoading = {this.onLoading.bind(this)}
                     onLoaded = {this.onLoaded.bind(this)}
                     onRespond = {this.onRespond.bind(this)}
+                    sameSize = {2}
                 >
                     <RRCell
                         size = {6}
