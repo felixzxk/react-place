@@ -191,6 +191,7 @@ var ReactRespond = React.createClass({
                 }
                 return _size_
             };
+        cellsWrap.style.paddingBottom = margin + 'px';
         var count = 0,
             needClear = [],
             removeClear = [];
