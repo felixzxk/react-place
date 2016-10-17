@@ -48,7 +48,6 @@ class MainApp extends React.Component {
     }
 
     render() {
-
         const ds = ()=>{
                 return {
                     textAlign: 'center',
@@ -73,7 +72,6 @@ class MainApp extends React.Component {
                 onLoaded = {this.onLoaded.bind(this)}
                 onRespond = {this.onRespond.bind(this)}
                 sameHeight = {300}
-                sameSize = {4}
             >
                 <RRCell
                     size = {6}

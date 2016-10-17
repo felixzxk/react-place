@@ -287,7 +287,6 @@ var ReactRespond = React.createClass({
         } else if (reTry == 1) {
             return 2
         }
-
     },
     setFixedCells: function (fixes, wrap) {
         var RRWidth = document.getElementById('__RR_Width__').offsetWidth,
@@ -398,7 +397,6 @@ var ReactRespond = React.createClass({
                 }
             }
         }
-
         if (!fixProps.ready) {
             fixProps.ready = true;
             this.setState({
@@ -432,7 +430,6 @@ var ReactRespond = React.createClass({
             curSize: _w || curSize,
             fixProps: this.state.fixProps || false
         };
-
         this.setting(elm);
         //this.setFixedCells(self, wrap, _w || curSize);
         //this.setCell(self, wrap, _w || curSize)
@@ -714,7 +711,6 @@ ReactRespond._ = {
                 };
                 if (pL) {
                     if (fixProps && fixProps['left'] && !fixProps['left'].pin && fixProps['left'].visible) {
-
                         _padding.left = pL;
                     } else {
                         _padding.left = 0;
@@ -730,6 +726,8 @@ ReactRespond._ = {
                 return _padding
             })();
         if (t.nodeType) {
+            var topWrap = document.getElementById('__RRFixTop'),
+                bottomWrap = document.getElementById('__RRFixBottom');
             if (!hideSideBar) {
                 t.style.paddingLeft = paddingX.left + 'px';
                 t.style.paddingRight = paddingX.right + 'px';
@@ -739,8 +737,25 @@ ReactRespond._ = {
                 t.style.paddingRight = '0';
                 realW = _w;
             }
+            function setTBStyle(tob,hasSide) {
+                if (tob) {
+                    if(hasSide){
+                        tob.style.paddingLeft = paddingX.left + 'px';
+                        tob.style.paddingRight = paddingX.right + 'px';
+                        tob.style.width = realW + 'px';
+                    }else{
+                        tob.style.width = document.getElementById('__RR_WRAP__').offsetWidth + 'px'
+                    }
+                    tob.style.margin = '0 auto'
+                } else {
+                    return
+                }
+            }
+
             if (realW > 0) {
                 t.style.width = realW + 'px';
+                setTBStyle(topWrap,true);
+                setTBStyle(bottomWrap)
             } else {
                 t.style.width = 'auto';
             }
@@ -1090,7 +1105,6 @@ SwitchBtn.style = {
     }
 };
 SwitchBtn.defaultIdIndex = 0;
-
 ReactRespond.RRCell = RRCell;
 ReactRespond.RRFix = RRFix;
 ReactRespond.SwitchBtn = SwitchBtn;
