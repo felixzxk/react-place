@@ -8,8 +8,12 @@
 ## 特点
 响应式布局，自定义响应式布局的规则，自动显示或隐藏侧边栏，没有行的概念，只要按文本流顺序插入cell元素就行了，详见 [wiki](https://github.com/felixzxk/react-respond/wiki)
 ## 安装demo
-先clone到本地，然后安装依赖
+先clone到本地
 
+    git clone https://github.com/felixzxk/react-respond.git
+
+然后到demo目录安装依赖
+    
     npm i
 
 按装react-respond组件（demo里已经有组件了，不需要另外安装）
