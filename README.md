@@ -49,19 +49,19 @@ webpack需要全局安装
         <RRCell
             {/* ...someProps goes here */}
         >
-            {/* your content gose here */}
+            {/* your content goes here */}
         </RRCell>
         {/* ... any other RRCells ... */}
         <RRCell
             {/* ...someProps goes here */}
         >
-            {/* your content gose here */}
+            {/* your content goes here */}
         </RRCell>
         <RRFix
             type = 'top'                        //fix的元素需要存在type属性，定义它在页面上的位置类型，默认是“top”
             {/* ...someProps goes here */}
         >
-            {/* your content gose here */}
+            {/* your content goes here */}
         </RRFix>
     </ReactRespond>
 在ReactRespond只允许存在RRCell、RRFix两类元素，其他元素将被移除；
