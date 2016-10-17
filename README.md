@@ -4,10 +4,9 @@
 ## 为啥？
 这类组件应该是比较多的，而且很多成熟框架都有此类功能，做这玩意儿不是浪费时间吗？
 对，是在浪费时间，我再来个粗糙的轮子就是以为了练手！
-没准儿将来有一天这玩意儿也能转得飞起来...
 不过现在这东西还很渣！
 ## 特点
-响应式布局，自定义响应式布局的规则，自动显示或隐藏侧边栏，详见 [wiki](https://github.com/felixzxk/react-place/wiki)
+响应式布局，自定义响应式布局的规则，自动显示或隐藏侧边栏，详见 [wiki](https://github.com/felixzxk/react-respond/wiki)
 ## 安装
     npm install --save react-respond
 ## 使用
